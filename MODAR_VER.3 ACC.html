@@ -1,0 +1,2623 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generator Modul Ajar Kurikulum Merdeka - Smart & Offline</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Fira+Code:wght@400;500&display=swap');
+
+  :root {
+    --paper: #FAF8F5;
+    --paper-dark: #F3EFE9;
+    --ink: #1E1D1A;
+    --ink-light: #5A5650;
+    --rule: #DFD9CE;
+    --accent: #9E3F1F;
+    --accent-hover: #7E2F15;
+    --accent-soft: #F5EAE1;
+    --good: #2E5B3D;
+    --good-soft: #EBF2ED;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'Plus Jakarta Sans', sans-serif;
+    --font-mono: 'Fira Code', monospace;
+    --shadow: 0 4px 20px rgba(30, 29, 26, 0.08);
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+  }
+
+  body.dark-mode {
+    --paper: #1A1917;
+    --paper-dark: #242220;
+    --ink: #F5F1EB;
+    --ink-light: #A8A49E;
+    --rule: #3D3A35;
+    --accent: #E06941;
+    --accent-hover: #F0855D;
+    --accent-soft: #38241D;
+    --good: #4E8A5E;
+    --good-soft: #1E2D23;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: var(--font-body);
+    background-color: var(--paper-dark);
+    color: var(--ink);
+    line-height: 1.6;
+    overflow-x: hidden;
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  /* Navigation Layout */
+  .app-container {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    min-height: 100vh;
+  }
+
+  @media (max-width: 1024px) {
+    .app-container {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Sidebar styling */
+  aside.sidebar {
+    background: var(--paper-dark);
+    border-right: 1px solid var(--rule);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    overflow-y: auto;
+    transition: background-color 0.3s, border-color 0.3s;
+  }
+
+  @media (max-width: 1024px) {
+    aside.sidebar {
+      height: auto;
+      position: relative;
+    }
+  }
+
+  .brand {
+    margin-bottom: 1.5rem;
+  }
+
+  .brand h1 {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin: 0 0 0.5rem 0;
+  }
+
+  .brand p {
+    font-size: 0.85rem;
+    color: var(--ink-light);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+  }
+
+  /* Dark mode and Utilities Header inside Sidebar */
+  .sidebar-utils {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Progress Bar */
+  .progress-box {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    margin-bottom: 1.5rem;
+  }
+
+  .progress-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--ink-light);
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+
+  .progress-bar-bg {
+    background: var(--rule);
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    background: var(--good);
+    height: 100%;
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+
+  /* Steps Tracker */
+  .steps-list {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0;
+  }
+
+  .step-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    margin-bottom: 0.5rem;
+    border: 1px solid transparent;
+  }
+
+  .step-item:hover {
+    background: rgba(158, 63, 31, 0.05);
+  }
+
+  .step-item.active {
+    background: var(--accent-soft);
+    border-color: rgba(158, 63, 31, 0.15);
+  }
+
+  .step-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--rule);
+    color: var(--ink-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    font-family: var(--font-mono);
+  }
+
+  .step-item.active .step-num {
+    background: var(--accent);
+    color: white;
+  }
+
+  .step-item.completed .step-num {
+    background: var(--good);
+    color: white;
+  }
+
+  .step-label {
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
+  /* Main Workspace Area */
+  main.workspace {
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+  }
+
+  @media (max-width: 640px) {
+    main.workspace {
+      padding: 1.5rem;
+    }
+  }
+
+  .wizard-section {
+    width: 100%;
+    max-width: 900px;
+    background: var(--paper);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--rule);
+    padding: 3rem;
+    box-shadow: var(--shadow);
+    margin-bottom: 2rem;
+    display: none;
+    animation: fadeIn 0.4s ease;
+  }
+
+  .wizard-section.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    color: var(--accent);
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--rule);
+    padding-bottom: 0.75rem;
+  }
+
+  /* Input fields & controls styling */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 640px) {
+    .grid-2 {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--ink-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  input, select, textarea {
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--ink);
+    transition: all 0.25s ease;
+    width: 100%;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(158, 63, 31, 0.1);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  /* Chips Container */
+  .chips-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  .chip-checkbox {
+    display: none;
+  }
+
+  .chip-label {
+    padding: 0.6rem 1.2rem;
+    border-radius: 50px;
+    background: var(--paper-dark);
+    border: 1px solid var(--rule);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--ink);
+  }
+
+  .chip-checkbox:checked + .chip-label {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* Navigation Buttons */
+  .wizard-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+    gap: 1rem;
+  }
+
+  .btn {
+    padding: 0.85rem 1.8rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    justify-content: center;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #ffffff;
+  }
+
+  .btn-primary:hover {
+    background: var(--accent-hover);
+  }
+
+  .btn-secondary {
+    background: var(--paper-dark);
+    border: 1px solid var(--rule);
+    color: var(--ink-light);
+  }
+
+  .btn-secondary:hover {
+    background: var(--rule);
+    color: var(--ink);
+  }
+
+  .btn-good {
+    background: var(--good);
+    color: #ffffff;
+  }
+
+  .btn-good:hover {
+    background: #23462F;
+  }
+
+  /* Preview Paper Document Styling */
+  .sheet-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+
+  .sheet {
+    background: #ffffff;
+    border: 1px solid #DFD9CE;
+    border-radius: 4px;
+    width: 100%;
+    max-width: 820px;
+    min-height: 1120px;
+    padding: 3.5rem;
+    box-shadow: var(--shadow);
+    color: #111111 !important;
+    font-family: Georgia, serif;
+    font-size: 11pt;
+    line-height: 1.6;
+    position: relative;
+    outline: none;
+  }
+
+  /* Rich editor mode instructions */
+  .editor-hint {
+    background: var(--good-soft);
+    color: var(--good);
+    padding: 0.85rem 1.2rem;
+    border-radius: var(--radius-md);
+    font-size: 0.88rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px dashed var(--good);
+  }
+
+  /* Document Typography within Preview Sheet */
+  .sheet h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 24pt;
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 2rem;
+    color: #111111;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .sheet h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 15pt;
+    border-bottom: 2px solid #222222;
+    padding-bottom: 0.35rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #222222;
+  }
+
+  .sheet h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 12pt;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: #333333;
+    font-weight: bold;
+  }
+
+  .sheet table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+    font-size: 10pt;
+  }
+
+  .sheet table, .sheet th, .sheet td {
+    border: 1px solid #444444;
+  }
+
+  .sheet th {
+    background-color: #f2f2f2;
+    padding: 0.6rem;
+    font-weight: bold;
+    text-align: left;
+    color: #111111;
+  }
+
+  .sheet td {
+    padding: 0.6rem;
+    vertical-align: top;
+    color: #111111;
+  }
+
+  .sheet ul, .sheet ol {
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+  }
+
+  .sheet li {
+    margin-bottom: 0.4rem;
+  }
+
+  .sheet p {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    text-align: justify;
+  }
+
+  .signature-block {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4rem;
+    font-size: 11pt;
+  }
+
+  .sig-col {
+    text-align: center;
+    width: 250px;
+  }
+
+  .sig-space {
+    height: 75px;
+  }
+
+  /* Database Display Controls */
+  .db-status {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    color: var(--ink-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Custom Toast Alert */
+  #toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 1rem 1.8rem;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow);
+    font-size: 0.95rem;
+    font-weight: 600;
+    z-index: 9999;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  #toast.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  /* Error Validation Alert list */
+  .validation-alert {
+    background: #FDF2F2;
+    border: 1px solid #F8B4B4;
+    color: #9B1C1C;
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius-md);
+    margin-bottom: 1.5rem;
+    display: none;
+  }
+
+  /* Media Print Definition (Sangat Penting untuk PDF murni offline) */
+  @media print {
+    body {
+      background: white !important;
+      color: black !important;
+    }
+    .app-container {
+      display: block;
+    }
+    aside.sidebar, .wizard-actions, .editor-hint, #toast, .no-print, .validation-alert {
+      display: none !important;
+    }
+    main.workspace {
+      padding: 0;
+      overflow: visible;
+    }
+    .wizard-section {
+      display: none !important;
+    }
+    .wizard-section#step-preview {
+      display: block !important;
+      background: white;
+      border: none;
+      box-shadow: none;
+      padding: 0;
+      margin: 0;
+    }
+    .sheet {
+      box-shadow: none !important;
+      border: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+    .page-break {
+      page-break-before: always;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="app-container">
+  <!-- SIDEBAR NAVIGATION -->
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="brand">
+        <h1>ModulAjar</h1>
+        <p>Kurikulum Merdeka • Smart Offline</p>
+      </div>
+
+      <div class="sidebar-utils">
+        <button class="btn btn-secondary" onclick="toggleDarkMode()" style="flex: 1; padding: 0.5rem;" title="Ubah Tema Gelap/Terang">
+          🌓 Tema
+        </button>
+        <button class="btn btn-secondary" onclick="triggerJsonImport()" style="flex: 1; padding: 0.5rem;" title="Unggah file Cadangan Modul JSON">
+          📤 Impor
+        </button>
+        <button class="btn btn-secondary" onclick="exportJsonDraft()" style="flex: 1; padding: 0.5rem;" title="Simpan Cadangan Modul JSON">
+          📥 Ekspor
+        </button>
+        <input type="file" id="import-json-file" style="display: none;" onchange="importJsonDraft(event)" accept=".json">
+      </div>
+
+      <div class="progress-box">
+        <div class="progress-label">
+          <span>Kelengkapan Modul</span>
+          <span id="progress-val">0%</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progress-fill"></div>
+        </div>
+      </div>
+
+      <nav>
+        <ul class="steps-list">
+          <li class="step-item active" onclick="goToStep(0)">
+            <div class="step-num">1</div>
+            <span class="step-label">Identitas & Sarpras</span>
+          </li>
+          <li class="step-item" onclick="goToStep(1)">
+            <div class="step-num">2</div>
+            <span class="step-label">Capaian & Tujuan</span>
+          </li>
+          <li class="step-item" onclick="goToStep(2)">
+            <div class="step-num">3</div>
+            <span class="step-label">Skenario Mengajar</span>
+          </li>
+          <li class="step-item" onclick="goToStep(3)">
+            <div class="step-num">4</div>
+            <span class="step-label">Asesmen & Bahan</span>
+          </li>
+          <li class="step-item" onclick="goToStep(4)">
+            <div class="step-num">5</div>
+            <span class="step-label">Pratinjau & Cetak</span>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="sidebar-bottom">
+      <div class="db-status">
+        <span>📦 Database Lokal:</span>
+        <strong id="db-indicator">Kurikulum Aktif</strong>
+      </div>
+      <button class="btn btn-secondary w-full" onclick="resetForm()" style="width: 100%; justify-content: center;">
+        🧹 Reset Semua Data
+      </button>
+    </div>
+  </aside>
+
+  <!-- WORKSPACE -->
+  <main class="workspace">
+    
+    <!-- LANGKAH 1: IDENTITAS & SARPRAS -->
+    <section class="wizard-section active" id="step-identity">
+      <h2 class="section-title">Langkah 1: Identitas & Informasi Umum</h2>
+      <div class="grid-2">
+        <div class="form-group">
+          <label for="in-guru">Nama Penyusun / Guru</label>
+          <input type="text" id="in-guru" value="Rahmat Gufron Tsani, S.Pd.">
+        </div>
+        <div class="form-group">
+          <label for="in-sekolah">Satuan Pendidikan / Sekolah</label>
+          <input type="text" id="in-sekolah" value="SMP ISLAM NW KUMBUNG">
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label for="in-jenjang">Jenjang Pendidikan</label>
+          <select id="in-jenjang" onchange="onJenjangChange()">
+            <option value="SD">SD / MI</option>
+            <option value="SMP">SMP / MTs</option>
+            <option value="SMA">SMA / MA / SMK</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="in-fase">Fase & Kelas</label>
+          <select id="in-fase" onchange="onFaseChange()">
+            <!-- Dinamis -->
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label for="in-mapel">Mata Pelajaran</label>
+          <select id="in-mapel" onchange="onMapelChange()">
+            <!-- Dinamis -->
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="in-semester">Semester & Alokasi Waktu</label>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+            <select id="in-semester">
+              <option value="Ganjil">1 (Ganjil)</option>
+              <option value="Genap">2 (Genap)</option>
+            </select>
+            <input type="text" id="in-alokasi" value="2 x 35 Menit (1 Pertemuan)">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="in-topik">Topik Utama / Pokok Bahasan <span style="color: var(--good); font-size: 0.8rem; font-weight: 400; text-transform: none;">(otomatis dari mapel, bisa diedit)</span></label>
+        <input type="text" id="in-topik" placeholder="Topik terisi otomatis saat memilih Mata Pelajaran...">
+      </div>
+
+      <div class="form-group">
+        <label for="in-kompetensi-awal">Kompetensi Awal (Prasyarat) <span style="color: var(--good); font-size: 0.8rem; font-weight: 400; text-transform: none;">(otomatis dari database)</span></label>
+        <textarea id="in-kompetensi-awal" placeholder="Terisi otomatis saat memilih Mata Pelajaran..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="in-sarpras-preset">Sarana dan Prasarana (Sarpras)</label>
+        <select id="in-sarpras-preset" onchange="onSarprasPresetChange()" style="margin-bottom: 0.75rem;">
+          <option value="">-- Pilih Paket Sarpras --</option>
+          <option value="minimal">📦 Paket Minimal — Papan Tulis & Alat Tulis</option>
+          <option value="dasar">📋 Paket Dasar — Buku + Spidol + Kertas Plano</option>
+          <option value="digital_terbatas">💻 Paket Digital Terbatas — 1 Laptop + Proyektor</option>
+          <option value="digital_penuh">🖥️ Paket Digital Penuh — Lab Komputer / Chromebook</option>
+          <option value="laboratorium">🔬 Paket Laboratorium — IPA/Kimia/Fisika/Biologi</option>
+          <option value="olahraga">🏃 Paket Olahraga — Lapangan + Alat Olahraga</option>
+          <option value="seni">🎨 Paket Seni — Alat Lukis/Musik/Tari/Teater</option>
+          <option value="outdoor">🌿 Paket Outdoor / Lingkungan — Kebun Sekolah / Area Terbuka</option>
+          <option value="custom">✏️ Kustom — Tulis Manual</option>
+        </select>
+        <textarea id="in-sarpras" placeholder="Pilih paket di atas atau tulis sarpras secara manual..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Profil Pelajar Pancasila (PPP) yang Dipilih</label>
+        <div class="chips-container" id="ppp-container">
+          <!-- Dinamis -->
+        </div>
+      </div>
+
+      <div class="wizard-actions">
+        <span></span>
+        <button class="btn btn-primary" onclick="nextStep()">
+          Langkah Berikutnya 
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- LANGKAH 2: CAPAIAN PEMBELAJARAN (CP) & TP -->
+    <section class="wizard-section" id="step-curriculum">
+      <h2 class="section-title">Langkah 2: Capaian & Tujuan Pembelajaran</h2>
+      
+      <div class="form-group">
+        <label for="in-cp-selector">Pilih Capaian Pembelajaran (CP) dari Database</label>
+        <select id="in-cp-selector" onchange="applySelectedCP()" style="font-family: var(--font-body); font-size: 0.95rem;">
+          <!-- Dinamis -->
+        </select>
+      </div>
+
+      <div id="cp-legal-notice" style="background: var(--accent-soft); border: 1px solid rgba(158, 63, 31, 0.2); border-radius: var(--radius-md); padding: 0.9rem 1.1rem; margin-bottom: 1.5rem; font-size: 0.82rem; color: var(--ink-light); line-height: 1.5;">
+        ℹ️ <strong style="color: var(--accent);">Dasar hukum CP:</strong> Capaian Pembelajaran mengacu pada <strong>Kepka BSKAP No. 046/H/KR/2025</strong>. Khusus mata pelajaran <strong>Pendidikan Agama dan Budi Pekerti</strong> (serta Pendidikan Khusus Agama), CP telah diperbarui melalui <strong>Kepka BKPDM No. 020 Tahun 2026</strong>; CP mata pelajaran lainnya tidak mengalami perubahan.
+      </div>
+
+      <div class="form-group">
+        <label for="in-cp-text">Rumusan Capaian Pembelajaran (CP)</label>
+        <textarea id="in-cp-text" placeholder="Teks CP lengkap..."></textarea>
+      </div>
+
+      <div class="form-group" style="background: var(--paper-dark); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--rule);">
+        <label style="color: var(--accent); display: flex; align-items: center; gap: 0.5rem; font-weight: bold;">
+          ⚡ Smart Engine (Zero-API Generator)
+        </label>
+        <p style="font-size: 0.88rem; color: var(--ink-light); margin-top: 0.25rem;">
+          Mekanisme parser kurikulum akan otomatis memproses rumusan CP, kompetensi awal, TP, pemahaman bermakna, pertanyaan pemantik, PPP, hingga sarana prasarana yang relevan.
+        </p>
+        <button class="btn btn-good" onclick="autoGenerateStep2AndMore()" style="margin-top: 0.5rem;">
+          🚀 Sinkronisasikan Data & Generate Cerdas
+        </button>
+      </div>
+
+      <div class="form-group">
+        <label for="in-tp-text">Tujuan Pembelajaran (TP) & Alur Tujuan (ATP)</label>
+        <textarea id="in-tp-text" placeholder="Satu tujuan per baris..." style="height: 120px;"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="in-pemahaman-bermakna">Pemahaman Bermakna</label>
+        <textarea id="in-pemahaman-bermakna" placeholder="Manfaat jangka panjang materi pembelajaran bagi kehidupan nyata siswa..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="in-pemantik">Pertanyaan Pemantik</label>
+        <textarea id="in-pemantik" placeholder="Pertanyaan pemantik pemancing logika kritis siswa..."></textarea>
+      </div>
+
+      <div class="wizard-actions">
+        <button class="btn btn-secondary" onclick="prevStep()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Sebelumnya
+        </button>
+        <button class="btn btn-primary" onclick="nextStep()">
+          Langkah Berikutnya
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- LANGKAH 3: KEGIATAN INTI -->
+    <section class="wizard-section" id="step-activities">
+      <h2 class="section-title">Langkah 3: Skenario & Kegiatan Pembelajaran</h2>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label for="in-model">Model Pembelajaran Utama</label>
+          <select id="in-model">
+            <option value="Problem Based Learning (PBL)">Problem Based Learning (PBL)</option>
+            <option value="Project Based Learning (PjBL)">Project Based Learning (PjBL)</option>
+            <option value="Discovery Learning">Discovery Learning</option>
+            <option value="Inquiry Terbimbing">Inquiry Terbimbing</option>
+            <option value="Pendekatan Saintifik">Pendekatan Saintifik / Ceramah Aktif</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="in-materi">Rangkuman Pokok Materi Pembelajaran</label>
+          <input type="text" id="in-materi" placeholder="Terisi otomatis dari CP/Database, atau hasil generate berbasis CP awal...">
+        </div>
+      </div>
+
+      <div class="form-group" style="background: var(--paper-dark); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--rule);">
+        <label style="color: var(--accent); display: flex; align-items: center; gap: 0.5rem; font-weight: bold;">
+          ⚡ Penyusun Skenario Mengajar (Deep Learning)
+        </label>
+        <p style="font-size: 0.88rem; color: var(--ink-light); margin-top: 0.25rem;">
+          Menyusun tahapan kegiatan Pendahuluan, Inti yang berfokus pada pedagogi *Deep Learning*, Penutup, serta detail Media Pembelajaran secara otomatis berbasis Model terpilih.
+        </p>
+        <button class="btn btn-good" onclick="autoGenerateStep3Activities()" style="margin-top: 0.5rem;">
+          🔄 Susun Kegiatan Mengajar & Media
+        </button>
+      </div>
+
+      <div class="form-group">
+        <label for="in-pendaluhuan">Kegiatan Pendahuluan</label>
+        <textarea id="in-pendaluhuan" style="height: 120px;" placeholder="Kegiatan pembuka, apersepsi, penyampaian tujuan..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="in-inti">Kegiatan Inti (Deep Learning)</label>
+        <textarea id="in-inti" style="height: 220px;" placeholder="Aktivitas inti kelas terstruktur sesuai sintaks model pembelajaran..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="in-penutup">Kegiatan Penutup</label>
+        <textarea id="in-penutup" style="height: 120px;" placeholder="Kegiatan penutup, penarikan kesimpulan, penugasan..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="in-media">Media & Sumber Pembelajaran</label>
+        <textarea id="in-media" placeholder="Slide presentasi, media fisik, video penunjang..."></textarea>
+      </div>
+
+      <div class="wizard-actions">
+        <button class="btn btn-secondary" onclick="prevStep()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Sebelumnya
+        </button>
+        <button class="btn btn-primary" onclick="nextStep()">
+          Langkah Berikutnya
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- LANGKAH 4: ASESMEN & BAHAN -->
+    <section class="wizard-section" id="step-assessment">
+      <h2 class="section-title">Langkah 4: Asesmen, LKPD, & Bahan Pembelajaran</h2>
+
+      <div class="form-group" style="background: var(--paper-dark); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--rule);">
+        <label style="color: var(--accent); display: flex; align-items: center; gap: 0.5rem; font-weight: bold;">
+          ⚡ Generator Evaluasi & Pendukung Belajar
+        </label>
+        <p style="font-size: 0.88rem; color: var(--ink-light); margin-top: 0.25rem;">
+          Membuat Asesmen Diagnostik, Formatif, Sumatif, Rubrik Penilaian terstruktur, LKPD interaktif siswa, Glosarium kelas, serta Bahan Bacaan Guru dan Siswa.
+        </p>
+        <button class="btn btn-good" onclick="autoGenerateStep4Materials()" style="margin-top: 0.5rem;">
+          ⚙️ Generate Evaluasi & Lampiran Lengkap
+        </button>
+      </div>
+
+      <div class="form-group">
+        <label for="in-asesmen-diag">Asesmen Diagnostik (Sebelum Pembelajaran)</label>
+        <textarea id="in-asesmen-diag" style="height: 100px;" placeholder="Pertanyaan kesiapan kognitif/non-kognitif awal siswa..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="in-asesmen-form">Asesmen Formatif (Proses Pembelajaran)</label>
+        <textarea id="in-asesmen-form" style="height: 100px;" placeholder="Asesmen formatif proses pembelajaran, penugasan kelas, observasi sikap..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="in-asesmen-sum">Asesmen Sumatif (Akhir Pembelajaran)</label>
+        <textarea id="in-asesmen-sum" style="height: 100px;" placeholder="Instrumen evaluasi sumatif akhir pembelajaran berupa tes evaluasi..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="in-rubrik">Rubrik Penilaian Kinerja</label>
+        <textarea id="in-rubrik" style="height: 120px;" placeholder="Kriteria kualifikasi capaian kognitif atau psikomotorik siswa..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="in-lkpd">Desain Lembar Kerja Peserta Didik (LKPD)</label>
+        <textarea id="in-lkpd" style="height: 140px;" placeholder="Struktur lembar kerja mandiri/kelompok bagi siswa..."></textarea>
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label for="in-refleksi-guru">Refleksi Pendidik (Guru)</label>
+          <textarea id="in-refleksi-guru" placeholder="Evaluasi bagi guru atas pelaksanaan proses mengajar hari ini..."></textarea>
+        </div>
+        <div class="form-group">
+          <label for="in-refleksi-siswa">Refleksi Peserta Didik</label>
+          <textarea id="in-refleksi-siswa" placeholder="Evaluasi kritis bagi siswa atas pemahaman materi mereka..."></textarea>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="in-glosarium">Glosarium</label>
+        <textarea id="in-glosarium" placeholder="Daftar istilah penting beserta definisinya..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="in-bacaan">Bahan Bacaan Guru & Peserta Didik</label>
+        <textarea id="in-bacaan" placeholder="Materi rujukan bacaan tambahan bagi pendidik dan siswa..."></textarea>
+      </div>
+
+      <div class="wizard-actions">
+        <button class="btn btn-secondary" onclick="prevStep()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Sebelumnya
+        </button>
+        <button class="btn btn-primary" onclick="goToStep(4)">
+          ✨ Generate Pratinjau Modul
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- LANGKAH 5: PREVIEW & EKSPOR -->
+    <section class="wizard-section" id="step-preview" style="max-width: 950px; width: 100%;">
+      <h2 class="section-title no-print">Langkah 5: Pratinjau & Ekspor Hasil</h2>
+
+      <div class="validation-alert" id="form-validation-box">
+        <strong>⚠️ Terdapat data formulir yang belum lengkap:</strong>
+        <ul id="validation-errors-list" style="margin-top: 0.5rem; padding-left: 1.5rem;"></ul>
+      </div>
+
+      <div class="editor-hint no-print">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <span><strong>Live-Editing Aktif!</strong> Klik bagian mana saja pada kertas di bawah untuk melakukan koreksi manual atau memoles dokumen secara langsung sebelum diunduh.</span>
+      </div>
+
+      <div class="no-print" style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem;">
+        <button class="btn btn-good" onclick="exportToWord()">
+          📥 Ekspor Dokumen Word (.doc)
+        </button>
+        <button class="btn btn-primary" onclick="printPDF()">
+          🖨️ Simpan / Cetak PDF
+        </button>
+        <button class="btn btn-secondary" onclick="copyDocumentText()">
+          📋 Salin Semua Teks
+        </button>
+      </div>
+
+      <div class="sheet-wrapper">
+        <!-- LEMBAR PREVIEW DOKUMEN REAL (EDITABLE) -->
+        <article class="sheet" id="preview-sheet" contenteditable="true" spellcheck="false">
+          <div style="text-align: center; padding: 4rem 0;">
+            <p style="font-family: var(--font-display); font-size: 1.4rem;">Silakan lengkapi form dan lakukan kompilasi dokumen...</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="wizard-actions no-print">
+        <button class="btn btn-secondary" onclick="goToStep(3)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Kembali Edit Form
+        </button>
+        <button class="btn btn-good" onclick="saveDraft()">
+          💾 Simpan Kemajuan Draf
+        </button>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- TOAST ALERT -->
+<div id="toast">
+  <span id="toast-icon">✨</span>
+  <span id="toast-message">Draf Berhasil Disimpan</span>
+</div>
+
+<script>
+/* ==========================================
+   1. DATABASE LENGKAP CAPAIAN PEMBELAJARAN (CP)
+   SD, SMP, SMA, SMK, MI, MTs, MA
+   ========================================== */
+const CP_DATABASE = {
+  "SD": {
+    "Fase A (Kelas 1-2)": {
+      "Bahasa Indonesia": {
+        "CP": "Peserta didik memiliki kemampuan berbahasa untuk berkomunikasi dan bernalar, sesuai dengan tujuan, kepada teman sebaya dan orang dewasa tentang diri dan lingkungan sekitarnya. Peserta didik mampu merespons instruksi lisan dan membaca teks pendek yang terdiri atas suku kata terbuka.",
+        "Materi": "Mengenal Suku Kata, Bunyi Huruf, dan Mengungkapkan Pendapat Sederhana.",
+        "Kompetensi": "Menyebutkan huruf abjad lisan dan melafalkan bunyi suku kata terbuka dengan fasih.",
+        "TP": "Membaca kata-kata yang mengandung suku kata terbuka.\nMenulis suku kata dasar untuk merangkai nama benda.\nMenceritakan diri sendiri dan anggota keluarga secara santun."
+      },
+      "Matematika": {
+        "CP": "Peserta didik dapat menunjukkan pemahaman dan memiliki intuisi bilangan (number sense) pada bilangan cacah sampai 100, termasuk membaca, menulis, menentukan nilai tempat, membandingkan, mengurutkan, serta melakukan penjumlahan dan pengurangan.",
+        "Materi": "Bilangan Cacah 1-20, Pola Bangun Datar, dan Pengurangan.",
+        "Kompetensi": "Mengetahui lambang bilangan 1-10 beserta lambang gambar konkrit pengiringnya.",
+        "TP": "Mengidentifikasi bilangan cacah dari 1 sampai dengan 20.\nMelakukan operasi penjumlahan sederhana menggunakan alat bantu benda konkrit.\nMenghitung mundur untuk menyelesaikan operasi pengurangan."
+      },
+      "IPAS (IPA-IPS)": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran IPAS untuk Fase A (Kelas 1-2) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik IPAS Fase A]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "IPA (Sains)": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran IPA untuk Fase A (Kelas 1-2) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik IPA Fase A]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "IPS": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran IPS untuk Fase A (Kelas 1-2) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik IPS Fase A]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Bahasa Inggris": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran Bahasa Inggris untuk Fase A (Kelas 1-2) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik Bahasa Inggris Fase A]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Pendidikan Agama dan Budi Pekerti": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran Pendidikan Agama dan Budi Pekerti untuk Fase A (Kelas 1-2) sesuai agama dan konteks sekolah Anda. Mengacu pada Kepka BKPDM No. 020 Tahun 2026.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik Pendidikan Agama Fase A]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Pendidikan Pancasila": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran Pendidikan Pancasila untuk Fase A (Kelas 1-2) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik Pendidikan Pancasila Fase A]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Pendidikan Jasmani, Olahraga, dan Kesehatan (PJOK)": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran PJOK untuk Fase A (Kelas 1-2) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik PJOK Fase A]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Informatika": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran Informatika untuk Fase A (Kelas 1-2) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik Informatika Fase A]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Seni Musik": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran Seni Musik untuk Fase A (Kelas 1-2) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik Seni Musik Fase A]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Seni Rupa": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran Seni Rupa untuk Fase A (Kelas 1-2) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik Seni Rupa Fase A]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Seni Tari": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran Seni Tari untuk Fase A (Kelas 1-2) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik Seni Tari Fase A]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Seni Teater": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran Seni Teater untuk Fase A (Kelas 1-2) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik Seni Teater Fase A]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Projek Penguatan Profil Pelajar Pancasila (P5)": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran P5 untuk Fase A (Kelas 1-2) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai tema projek P5 Fase A]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      }
+    },
+    "Fase B (Kelas 3-4)": {
+      "IPAS (IPA-IPS)": {
+        "CP": "Peserta didik menganalisis hubungan antara bentuk serta fungsi bagian tubuh pada manusia, hewan, dan tumbuhan. Memahami siklus hidup makhluk hidup serta pelestarian sumber daya alam di lingkungan sekitarnya.",
+        "Materi": "Fungsi Tubuh Hewan/Tumbuhan, Jenis Gaya dan Energi.",
+        "Kompetensi": "Mengenal keberagaman makhluk hidup di lingkungan rumah serta bagian kasarnya (akar, batang, daun).",
+        "TP": "Menganalisis bagian tubuh tumbuhan beserta fungsinya bagi kelangsungan hidup.\nMendeskripsikan pengaruh gaya terhadap gerak benda di lingkungan sekitar."
+      },
+      "IPA (Sains)": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran IPA untuk Fase B (Kelas 3-4) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik IPA Fase B]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "IPS": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran IPS untuk Fase B (Kelas 3-4) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik IPS Fase B]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Bahasa Indonesia": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran Bahasa Indonesia untuk Fase B (Kelas 3-4) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik Bahasa Indonesia Fase B]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Matematika": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran Matematika untuk Fase B (Kelas 3-4) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik Matematika Fase B]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Bahasa Inggris": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran Bahasa Inggris untuk Fase B (Kelas 3-4) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik Bahasa Inggris Fase B]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Pendidikan Agama dan Budi Pekerti": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran Pendidikan Agama dan Budi Pekerti untuk Fase B (Kelas 3-4) sesuai agama dan konteks sekolah Anda. Mengacu pada Kepka BKPDM No. 020 Tahun 2026.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik Pendidikan Agama Fase B]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Pendidikan Pancasila": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran Pendidikan Pancasila untuk Fase B (Kelas 3-4) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik Pendidikan Pancasila Fase B]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Pendidikan Jasmani, Olahraga, dan Kesehatan (PJOK)": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran PJOK untuk Fase B (Kelas 3-4) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik PJOK Fase B]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Informatika": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran Informatika untuk Fase B (Kelas 3-4) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik Informatika Fase B]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Seni Musik": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran Seni Musik untuk Fase B (Kelas 3-4) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik Seni Musik Fase B]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Seni Rupa": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran Seni Rupa untuk Fase B (Kelas 3-4) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik Seni Rupa Fase B]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Seni Tari": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran Seni Tari untuk Fase B (Kelas 3-4) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik Seni Tari Fase B]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Seni Teater": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran Seni Teater untuk Fase B (Kelas 3-4) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik Seni Teater Fase B]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Projek Penguatan Profil Pelajar Pancasila (P5)": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran P5 untuk Fase B (Kelas 3-4) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai tema projek P5 Fase B]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      }
+    },
+    "Fase C (Kelas 5-6)": {
+      "IPAS": {
+        "CP": "Peserta didik mendeskripsikan struktur, fungsi, dan proses kerja organ pencernaan dan sistem peredaran darah manusia. Menganalisis interaksi komponen ekosistem serta transfer energi dalam bentuk rantai makanan.",
+        "Materi": "Organ Pencernaan Manusia, Ekosistem, Magnet dan Listrik.",
+        "Kompetensi": "Mengenali kebutuhan dasar nutrisi makanan sehari-hari bagi kelangsungan hidup manusia.",
+        "TP": "Menguraikan alur sistem pencernaan manusia beserta fungsi organnya.\nMembuat bagan rantai makanan pada ekosistem darat dan air."
+      },
+      "IPA (Sains)": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran IPA untuk Fase C (Kelas 5-6) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik IPA Fase C]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "IPS": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran IPS untuk Fase C (Kelas 5-6) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik IPS Fase C]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Bahasa Indonesia": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran Bahasa Indonesia untuk Fase C (Kelas 5-6) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik Bahasa Indonesia Fase C]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Matematika": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran Matematika untuk Fase C (Kelas 5-6) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik Matematika Fase C]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Bahasa Inggris": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran Bahasa Inggris untuk Fase C (Kelas 5-6) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik Bahasa Inggris Fase C]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Pendidikan Agama dan Budi Pekerti": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran Pendidikan Agama dan Budi Pekerti untuk Fase C (Kelas 5-6) sesuai agama dan konteks sekolah Anda. Mengacu pada Kepka BKPDM No. 020 Tahun 2026.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik Pendidikan Agama Fase C]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Pendidikan Pancasila": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran Pendidikan Pancasila untuk Fase C (Kelas 5-6) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik Pendidikan Pancasila Fase C]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Pendidikan Jasmani, Olahraga, dan Kesehatan (PJOK)": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran PJOK untuk Fase C (Kelas 5-6) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik PJOK Fase C]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Informatika": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran Informatika untuk Fase C (Kelas 5-6) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik Informatika Fase C]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Seni Musik": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran Seni Musik untuk Fase C (Kelas 5-6) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik Seni Musik Fase C]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Seni Rupa": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran Seni Rupa untuk Fase C (Kelas 5-6) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik Seni Rupa Fase C]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Seni Tari": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran Seni Tari untuk Fase C (Kelas 5-6) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik Seni Tari Fase C]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Seni Teater": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran Seni Teater untuk Fase C (Kelas 5-6) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai topik Seni Teater Fase C]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      },
+      "Projek Penguatan Profil Pelajar Pancasila (P5)": {
+        "CP": "[Silakan isi manual] Rumusan Capaian Pembelajaran P5 untuk Fase C (Kelas 5-6) sesuai konteks sekolah Anda.",
+        "Materi": "[Silakan isi manual oleh guru sesuai tema projek P5 Fase C]",
+        "Kompetensi": "[Silakan isi manual oleh guru]",
+        "TP": ""
+      }
+    }
+  },
+  "SMP": {
+    "Fase D (Kelas 7-9)": {
+      "IPA (Sains)": {
+        "CP": "Peserta didik dapat mengidentifikasi sistem organisasi kehidupan, melakukan pengukuran ilmiah, menganalisis konsep energi, gaya, gerak, suhu, kalor, serta klasifikasi materi dan perubahannya.",
+        "Materi": "Sel sebagai Unit Kehidupan, Suhu dan Kalor, Struktur Bumi.",
+        "Kompetensi": "Memahami metode eksperimen ilmiah dasar dan besaran pokok fisika dasar.",
+        "TP": "Membedakan sel hewan dan sel tumbuhan melalui diagram mikroskopis.\nMenganalisis perpindahan kalor secara konduksi, konveksi, dan radiasi."
+      },
+      "Matematika": {
+        "CP": "Peserta didik dapat menggunakan pola dalam bentuk konfigurasi objek, melakukan operasi aritmetika sosial, memahami persamaan linier satu variabel, teorema Pythagoras, serta penyajian data statistika.",
+        "Materi": "Aljabar, Teorema Pythagoras, Persamaan Linier Satu Variabel.",
+        "Kompetensi": "Menguasai operasi perkalian, pembagian, penjumlahan, dan pengurangan bilangan bulat kompleks.",
+        "TP": "Menentukan penyelesaian dari persamaan linier satu variabel.\nMenerapkan teorema Pythagoras untuk menghitung panjang sisi segitiga siku-siku."
+      },
+      "Bahasa Inggris": {
+        "CP": "Students use English to communicate with teachers, peers, and others in structured contexts. They read, write, and respond to familiar topics containing basic vocabulary and simple grammar structures.",
+        "Materi": "Descriptive Text, Recount Text, Asking & Giving Opinions.",
+        "Kompetensi": "Knowing simple parts of speech (nouns, verbs, adjectives) and familiar everyday vocabulary.",
+        "TP": "Write a short descriptive text about a person or a popular place.\nIdentify the generic structure of a simple recount text."
+      },
+      "Pendidikan Agama dan Budi Pekerti": {
+        "CP": "Peserta didik mampu membaca, menghafal, dan memahami kandungan Al-Qur'an dan Hadis pilihan (elemen Al-Qur'an dan Hadis); menganalisis serta mengevaluasi makna iman kepada Allah SWT, malaikat, dan kitab-kitab-Nya (elemen Akidah); menerapkan akhlak mulia dalam interaksi sosial dengan menjunjung kecenderungan kepada kebaikan/al-hanifiyyah (elemen Akhlak); memahami dan mempraktikkan ketentuan fikih ibadah serta muamalah dasar (elemen Fikih); serta meneladani sejarah peradaban Islam (elemen Sejarah Peradaban Islam), sehingga terbentuk peserta didik yang beriman, berakhlak mulia, toleran (al-samhah), dan rahmatan lil 'alamin bagi sesama dan lingkungan. [Mengacu pada Kepka BKPDM No. 020 Tahun 2026]",
+        "Materi": "Al-Qur'an dan Hadis Pilihan, Iman kepada Allah dan Asmaul Husna, Akhlak Mulia dan Toleransi (Al-Samhah), Fikih Ibadah dan Muamalah Dasar, Sejarah Peradaban Islam.",
+        "Kompetensi": "Memahami rukun iman dan rukun Islam, serta mengenal huruf dan bacaan dasar Al-Qur'an sebagai fondasi kehidupan seorang muslim.",
+        "TP": "Membaca dan menghafal ayat Al-Qur'an dan Hadis pilihan sesuai tajwid yang benar.\nMenjelaskan makna iman kepada Allah SWT, malaikat, dan kitab-kitab-Nya beserta implikasinya dalam kehidupan sehari-hari.\nMendemonstrasikan perilaku akhlak mulia (makarim al-akhlaq) dan sikap toleran dalam lingkungan keluarga, sekolah, dan masyarakat yang beragam.\nMempraktikkan ketentuan fikih ibadah dan muamalah dasar dalam kehidupan sehari-hari.\nMeneladani nilai-nilai keteladanan dari sejarah peradaban Islam."
+      },
+      "Pendidikan Pancasila": {
+        "CP": "Peserta didik mampu menganalisis nilai-nilai Pancasila sebagai dasar negara dan pandangan hidup bangsa, memahami norma dan aturan dalam kehidupan bermasyarakat, serta menunjukkan sikap demokratis dalam kehidupan berbangsa dan bernegara.",
+        "Materi": "Nilai-nilai Pancasila, Norma dalam Masyarakat, Hak dan Kewajiban Warga Negara.",
+        "Kompetensi": "Mengenal Pancasila sebagai ideologi dan dasar negara Republik Indonesia.",
+        "TP": "Menganalisis nilai-nilai yang terkandung dalam setiap sila Pancasila.\nMendeskripsikan norma-norma yang berlaku dalam kehidupan bermasyarakat.\nMembedakan hak dan kewajiban warga negara dalam kehidupan berbangsa."
+      },
+      "Bahasa Indonesia": {
+        "CP": "Peserta didik mampu memahami, mengolah, dan menginterpretasi informasi dari teks fiksi maupun nonfiksi, serta mampu mengekspresikan gagasan secara tertulis dan lisan dengan bahasa yang komunikatif, efektif, dan sesuai kaidah.",
+        "Materi": "Teks Narasi, Teks Eksposisi, Teks Argumentasi, Puisi, dan Surat Resmi.",
+        "Kompetensi": "Memahami struktur kalimat dasar dan ejaan Bahasa Indonesia yang disempurnakan (EYD).",
+        "TP": "Mengidentifikasi struktur dan ciri kebahasaan teks eksposisi.\nMenyusun teks narasi berdasarkan pengalaman pribadi dengan sistematika yang runtut.\nMenganalisis unsur-unsur pembangun puisi dan mempresentasikan hasilnya."
+      },
+      "Pendidikan Jasmani, Olahraga, dan Kesehatan (PJOK)": {
+        "CP": "Peserta didik mampu menunjukkan kemampuan dalam berbagai aktivitas jasmani dan olahraga, memahami konsep kesehatan dan kebugaran tubuh, serta menerapkan perilaku hidup sehat dalam kehidupan sehari-hari.",
+        "Materi": "Permainan Bola Besar (Basket, Voli), Atletik, Senam, Kesehatan Reproduksi Remaja.",
+        "Kompetensi": "Mengenal teknik dasar olahraga permainan bola besar dan memahami pentingnya kebugaran jasmani.",
+        "TP": "Mempraktikkan teknik dasar permainan bola basket (dribbling, passing, shooting).\nMendeskripsikan komponen kebugaran jasmani dan cara meningkatkannya.\nMenjelaskan perubahan fisik dan psikis masa remaja serta cara menjaga kesehatan reproduksi."
+      },
+      "Informatika": {
+        "CP": "Peserta didik mampu memahami konsep berpikir komputasional, menggunakan perangkat teknologi informasi dan komunikasi secara efektif dan etis, serta mengembangkan solusi berbasis algoritma dan pemrograman sederhana.",
+        "Materi": "Berpikir Komputasional, Algoritma dan Pemrograman Dasar, Internet dan Literasi Digital.",
+        "Kompetensi": "Memahami cara kerja komputer, perangkat keras, dan perangkat lunak dasar.",
+        "TP": "Mendeskripsikan konsep berpikir komputasional dan penerapannya dalam pemecahan masalah sehari-hari.\nMembuat algoritma sederhana menggunakan flowchart untuk menyelesaikan suatu permasalahan.\nMenerapkan etika digital dalam penggunaan internet dan media sosial."
+      },
+      "Seni Musik": {
+        "CP": "Peserta didik mampu mengapresiasi dan mengekspresikan karya seni musik secara vokal dan instrumental, memahami konsep musik (melodi, harmoni, ritme, dinamika), serta mengembangkan kreativitas melalui eksplorasi musikal.",
+        "Materi": "Teori Musik Dasar, Teknik Vokal dan Instrumen, Aransemen Musik Sederhana.",
+        "Kompetensi": "Mengenal not balok/angka dan memahami unsur-unsur musik dasar.",
+        "TP": "Membaca dan memainkan not balok sederhana menggunakan alat musik melodis.\nMenampilkan karya vokal/instrumental secara individu atau kelompok.\nMengapresiasi pertunjukan musik dari berbagai genre dan budaya."
+      },
+      "Seni Rupa": {
+        "CP": "Peserta didik mampu mengapresiasi dan menciptakan karya seni rupa dua dimensi dan tiga dimensi dengan menerapkan unsur-unsur dan prinsip seni rupa, serta mengembangkan kepekaan estetik dan kreativitas visual.",
+        "Materi": "Unsur dan Prinsip Seni Rupa, Gambar Ilustrasi, Seni Kerajinan 3 Dimensi.",
+        "Kompetensi": "Mengenal berbagai jenis, media, dan teknik dalam seni rupa.",
+        "TP": "Menerapkan unsur-unsur dan prinsip seni rupa dalam membuat karya gambar ilustrasi.\nMenciptakan karya seni kerajinan tiga dimensi dengan teknik yang dipelajari.\nMengapresiasi dan mengkritisi karya seni rupa dari berbagai periode dan budaya."
+      },
+      "Seni Tari": {
+        "CP": "Peserta didik mampu mengapresiasi dan mempraktikkan gerak tari berdasarkan aspek ruang, waktu, dan tenaga, memahami nilai-nilai budaya dalam tari tradisional Indonesia, serta mengembangkan kreativitas melalui eksplorasi gerak.",
+        "Materi": "Gerak Dasar Tari Tradisional, Elemen Tari (Ruang, Waktu, Tenaga), Apresiasi Tari Nusantara.",
+        "Kompetensi": "Mengenal jenis-jenis tari tradisional dari berbagai daerah di Indonesia.",
+        "TP": "Mempraktikkan gerak dasar tari tradisional dari daerah setempat dengan benar.\nMengidentifikasi elemen-elemen gerak tari dan fungsinya dalam sebuah pertunjukan.\nMengapresiasi keragaman tari Nusantara sebagai bagian dari kekayaan budaya bangsa."
+      },
+      "Seni Teater": {
+        "CP": "Peserta didik mampu mengapresiasi dan mempraktikkan unsur-unsur teater (pemeranan, sutradara, naskah), memahami proses produksi pertunjukan teater, serta mengekspresikan kreativitas melalui permainan peran.",
+        "Materi": "Unsur-unsur Teater, Teknik Pemeranan Dasar, Produksi Pertunjukan Sederhana.",
+        "Kompetensi": "Mengenal jenis-jenis pertunjukan teater tradisional dan modern.",
+        "TP": "Mempraktikkan teknik pemeranan dasar (olah tubuh, olah suara, olah rasa) dalam drama pendek.\nMengidentifikasi unsur-unsur pertunjukan teater dari naskah drama yang dibaca.\nBerkolaborasi dalam memproduksi pertunjukan teater sederhana di lingkungan sekolah."
+      },
+      "Projek Penguatan Profil Pelajar Pancasila (P5)": {
+        "CP": "Peserta didik mampu berkolaborasi dalam mengidentifikasi dan memecahkan masalah nyata di lingkungan sekitar melalui pendekatan multidisiplin, mengembangkan karakter Profil Pelajar Pancasila, serta menghasilkan produk/aksi nyata yang bermanfaat.",
+        "Materi": "Identifikasi Masalah Lingkungan, Perencanaan Proyek, Implementasi dan Evaluasi Aksi Nyata.",
+        "Kompetensi": "Memahami konsep Profil Pelajar Pancasila dan relevansinya dengan kehidupan sehari-hari.",
+        "TP": "Mengidentifikasi permasalahan nyata di lingkungan sekolah atau masyarakat sekitar.\nMerancang proyek kolaboratif sebagai solusi atas permasalahan yang ditemukan.\nMempresentasikan hasil proyek dan merefleksikan nilai-nilai Profil Pelajar Pancasila yang berkembang."
+      }
+    }
+  },
+  "SMA": {
+    "Fase E (Kelas 10)": {
+      "Kimia": {
+        "CP": "Peserta didik memiliki kemampuan memahami hukum-hukum dasar kimia, konfigurasi elektron, sifat keperiodikan unsur, serta peran kimia dalam kehidupan sehari-hari (Green Chemistry).",
+        "Materi": "Struktur Atom, Hukum Dasar Kimia, Pembangunan Berkelanjutan.",
+        "Kompetensi": "Mengenali rumus molekul air, garam dapur, serta partikel penyusun materi terkecil.",
+        "TP": "Menuliskan konfigurasi elektron berdasarkan asas Aufbau.\nMenerapkan hukum Lavoisier dalam perhitungan massa reaksi kimia."
+      },
+      "Fisika": {
+        "CP": "Peserta didik mampu mengukur besaran fisis, menganalisis gerak lurus (GLB & GLBB), konsep usaha dan energi terbarukan, serta dampak pemanasan global.",
+        "Materi": "Pengukuran Ilmiah, Usaha dan Energi Terbarukan, Vektor.",
+        "Kompetensi": "Memahami operasi pembacaan angka mistar manual serta konsep kecepatan umum.",
+        "TP": "Melakukan pengukuran menggunakan jangka sorong dengan tingkat ketelitian yang tepat.\nMenganalisis transfer energi pada pembangkit listrik tenaga mikrohidro."
+      },
+      "Pendidikan Agama dan Budi Pekerti": {
+        "CP": "Peserta didik mampu membaca, menghafal, dan menganalisis kandungan Al-Qur'an dan Hadis tentang prinsip kehidupan (elemen Al-Qur'an dan Hadis); menganalisis dan mengevaluasi makna beriman kepada Allah SWT, malaikat, dan kitab-kitab-Nya (elemen Akidah); menerapkan akhlak mulia sebagai manifestasi iman serta sikap toleransi beragama/al-samhah (elemen Akhlak); memahami sumber dan kaidah hukum Islam secara mendalam (elemen Fikih); serta menganalisis sejarah peradaban Islam (elemen Sejarah Peradaban Islam), guna mewujudkan kepribadian muslim yang rahmatan lil 'alamin dalam kehidupan bermasyarakat. [Mengacu pada Kepka BKPDM No. 020 Tahun 2026]",
+        "Materi": "Al-Qur'an dan Hadis tentang Prinsip Kehidupan, Iman kepada Kitab-Kitab Allah, Hukum Islam dan Sumbernya, Akhlak Mulia dan Toleransi Beragama (Al-Samhah), Sejarah Peradaban Islam.",
+        "Kompetensi": "Memahami isi kandungan Al-Qur'an dan Hadis sebagai pedoman hidup, serta mengenal dasar-dasar hukum Islam.",
+        "TP": "Menganalisis kandungan Al-Qur'an dan Hadis terkait prinsip kehidupan bermasyarakat.\nMenganalisis makna beriman kepada kitab-kitab Allah SWT dan implikasinya dalam kehidupan.\nMengevaluasi sumber dan kaidah hukum Islam serta berbagai permasalahan hukum kontemporer.\nMempraktikkan sikap toleransi beragama (al-samhah) dan akhlak mulia dalam kehidupan bermasyarakat yang beragam.\nMenganalisis nilai-nilai keteladanan dari sejarah peradaban Islam."
+      },
+      "Pendidikan Pancasila": {
+        "CP": "Peserta didik mampu menganalisis Pancasila sebagai sistem nilai dan ideologi negara, memahami UUD NRI 1945 sebagai konstitusi negara, serta menunjukkan sikap demokratis dan bertanggung jawab sebagai warga negara Indonesia.",
+        "Materi": "Pancasila sebagai Ideologi Negara, UUD NRI 1945, Sistem Demokrasi Indonesia.",
+        "Kompetensi": "Memahami Pancasila sebagai dasar negara, pandangan hidup bangsa, dan ideologi nasional.",
+        "TP": "Menganalisis Pancasila sebagai sistem nilai yang menjadi landasan kehidupan berbangsa dan bernegara.\nMendeskripsikan kedudukan dan fungsi UUD NRI 1945 dalam sistem ketatanegaraan Indonesia.\nMengevaluasi penerapan sistem demokrasi Pancasila dalam kehidupan bermasyarakat."
+      },
+      "Bahasa Indonesia": {
+        "CP": "Peserta didik mampu memahami, mengolah, menginterpretasi, dan mengevaluasi berbagai jenis teks, serta mampu mengekspresikan gagasan secara tertulis dan lisan dalam berbagai konteks dengan bahasa yang komunikatif, argumentatif, dan bernilai estetis.",
+        "Materi": "Teks Laporan Hasil Observasi, Teks Anekdot, Hikayat, Negosiasi, dan Debat.",
+        "Kompetensi": "Menguasai kaidah ejaan, tanda baca, dan struktur kalimat efektif dalam Bahasa Indonesia.",
+        "TP": "Mengidentifikasi struktur dan ciri kebahasaan teks laporan hasil observasi.\nMembandingkan nilai-nilai kehidupan dalam hikayat dengan cerpen modern.\nMempraktikkan kegiatan debat akademik dengan argumen yang logis dan santun."
+      },
+      "Matematika": {
+        "CP": "Peserta didik mampu memahami dan menerapkan konsep fungsi, persamaan dan pertidaksamaan, trigonometri, serta statistika dalam memecahkan masalah kontekstual dan mengembangkan penalaran matematis.",
+        "Materi": "Fungsi Komposisi dan Fungsi Invers, Trigonometri, Statistika dan Peluang.",
+        "Kompetensi": "Menguasai operasi aljabar dan pembuktian sifat-sifat persamaan linear.",
+        "TP": "Menentukan komposisi dan invers fungsi serta menerapkannya dalam pemecahan masalah.\nMenyelesaikan masalah kontekstual menggunakan konsep trigonometri.\nMenganalisis dan menyajikan data statistika menggunakan ukuran pemusatan dan penyebaran data."
+      },
+      "Bahasa Inggris": {
+        "CP": "Students are able to communicate effectively in English in academic and social contexts, comprehend and produce various types of texts (argumentative, analytical, literary), and develop critical thinking through language use.",
+        "Materi": "Analytical Exposition, Hortatory Exposition, News Item, Narrative, and Report Text.",
+        "Kompetensi": "Mastering complex sentence structures, vocabulary in context, and English discourse patterns.",
+        "TP": "Produce a well-structured analytical exposition text on a given issue.\nIdentify and evaluate the purpose, audience, and context of various authentic texts.\nParticipate in academic discussions and present arguments clearly in English."
+      },
+      "Pendidikan Jasmani, Olahraga, dan Kesehatan (PJOK)": {
+        "CP": "Peserta didik mampu menganalisis dan mengevaluasi strategi dalam berbagai aktivitas jasmani dan olahraga, memahami prinsip latihan fisik untuk pengembangan kebugaran optimal, serta menerapkan gaya hidup aktif dan sehat.",
+        "Materi": "Strategi Permainan Bola Besar dan Kecil, Latihan Kebugaran Jasmani, Kesehatan Masyarakat dan P3K.",
+        "Kompetensi": "Memahami komponen kebugaran jasmani dan teknik dasar berbagai cabang olahraga.",
+        "TP": "Menganalisis strategi dalam permainan bola besar dan menerapkannya dalam pertandingan.\nMerancang program latihan kebugaran jasmani berdasarkan prinsip FITT (Frekuensi, Intensitas, Tipe, Waktu).\nMengevaluasi berbagai faktor risiko kesehatan dan cara pencegahannya."
+      },
+      "Informatika": {
+        "CP": "Peserta didik mampu menerapkan berpikir komputasional dalam pemecahan masalah kompleks, mengembangkan program komputer menggunakan bahasa pemrograman, serta memahami dampak sosial teknologi informasi dalam kehidupan modern.",
+        "Materi": "Pemrograman Python/JavaScript, Basis Data, Keamanan Siber, dan Dampak Sosial Teknologi.",
+        "Kompetensi": "Memahami konsep algoritma, struktur data dasar, dan lingkungan pemrograman.",
+        "TP": "Mengembangkan program sederhana menggunakan bahasa pemrograman untuk menyelesaikan masalah.\nMenerapkan konsep basis data relasional dalam perancangan sistem informasi sederhana.\nMenganalisis dampak positif dan negatif teknologi informasi bagi kehidupan sosial masyarakat."
+      },
+      "Seni Musik": {
+        "CP": "Peserta didik mampu mengapresiasi dan menciptakan karya musik secara mendalam, memahami sejarah perkembangan musik dari berbagai era dan budaya, serta mengembangkan identitas musikal melalui eksplorasi kreatif.",
+        "Materi": "Sejarah Musik Barat dan Nusantara, Aransemen Musik, Komposisi dan Produksi Musik.",
+        "Kompetensi": "Menguasai teknik vokal/instrumental dan teori musik tingkat menengah.",
+        "TP": "Menganalisis perkembangan musik dari era Barok hingga kontemporer dan musik tradisional Nusantara.\nMenciptakan aransemen musik yang menggabungkan unsur tradisional dan modern.\nMemproduksi dan menampilkan karya musik orisinal dengan perencanaan artistik yang matang."
+      },
+      "Seni Rupa": {
+        "CP": "Peserta didik mampu mengapresiasi dan menciptakan karya seni rupa dengan gagasan yang kuat, memahami konteks sosial-budaya dalam seni, serta mengembangkan gaya visual yang khas melalui eksplorasi berbagai medium.",
+        "Materi": "Sejarah Seni Rupa Indonesia dan Dunia, Desain Grafis, Seni Instalasi dan Kontemporer.",
+        "Kompetensi": "Menguasai teknik dasar berbagai medium seni rupa dan memahami prinsip estetika.",
+        "TP": "Menganalisis perkembangan seni rupa Indonesia dari masa tradisional hingga kontemporer.\nMenciptakan karya seni rupa yang mengekspresikan gagasan orisinal dengan medium pilihan.\nMempresentasikan dan mempertahankan konsep karya seni rupa dalam diskusi kritis."
+      },
+      "Seni Tari": {
+        "CP": "Peserta didik mampu mengapresiasi dan menciptakan karya tari yang ekspresif, memahami konteks budaya dalam tari Nusantara dan mancanegara, serta mengembangkan kreativitas koreografis melalui eksplorasi gerak yang personal.",
+        "Materi": "Koreografi Tari, Sejarah Tari Nusantara dan Kontemporer, Produksi Pertunjukan Tari.",
+        "Kompetensi": "Menguasai teknik gerak tari tradisional dan modern serta memahami elemen pertunjukan.",
+        "TP": "Menciptakan karya koreografi tari pendek dengan konsep yang orisinal dan terstruktur.\nMenganalisis nilai estetika dan makna budaya dalam pertunjukan tari Nusantara.\nBerkolaborasi dalam memproduksi pertunjukan tari dengan mempertimbangkan tata rias, kostum, dan musik."
+      },
+      "Seni Teater": {
+        "CP": "Peserta didik mampu mengapresiasi dan mempraktikkan seni pemeranan secara profesional, memahami dramaturgi dan sejarah teater dunia, serta mengembangkan kreativitas dalam menyutradarai dan memproduksi pertunjukan teater.",
+        "Materi": "Dramaturgi, Pemeranan Lanjutan, Penyutradaraan, dan Manajemen Produksi Teater.",
+        "Kompetensi": "Menguasai teknik pemeranan dasar (olah tubuh, olah suara, olah rasa) dan analisis naskah.",
+        "TP": "Memerankan tokoh dalam naskah drama dengan interpretasi karakter yang mendalam dan terpercaya.\nMerancang konsep penyutradaraan untuk sebuah pertunjukan teater pendek.\nBerkolaborasi dalam memproduksi pertunjukan teater yang utuh dengan manajemen yang profesional."
+      },
+      "Projek Penguatan Profil Pelajar Pancasila (P5)": {
+        "CP": "Peserta didik mampu berkolaborasi lintas disiplin dalam mengidentifikasi, menganalisis, dan memberikan solusi nyata atas permasalahan aktual di masyarakat, mengembangkan karakter Profil Pelajar Pancasila secara holistik, serta menghasilkan inovasi yang berdampak.",
+        "Materi": "Analisis Isu Sosial-Lingkungan Kontemporer, Inovasi Solutif, Aksi Nyata dan Evaluasi Dampak.",
+        "Kompetensi": "Memahami metodologi riset dasar dan desain pemikiran (design thinking) dalam pemecahan masalah.",
+        "TP": "Menganalisis isu sosial atau lingkungan yang relevan menggunakan pendekatan multidisiplin.\nMerancang inovasi solutif berbasis design thinking sebagai respons atas isu yang ditemukan.\nMengimplementasikan dan mengevaluasi dampak proyek terhadap komunitas serta merefleksikan pertumbuhan karakter Pelajar Pancasila."
+      }
+    },
+    "Fase F (Kelas 11-12)": {
+      "Kimia": {
+        "CP": "Peserta didik mampu menganalisis reaksi kimia organik dan anorganik, memahami kesetimbangan kimia, termokimia, serta menerapkan konsep kimia dalam konteks industri dan lingkungan.",
+        "Materi": "Reaksi Redoks dan Elektrokimia, Kesetimbangan Kimia, Kimia Organik.",
+        "Kompetensi": "Menguasai konsep ikatan kimia, stoikiometri, dan sifat larutan asam-basa.",
+        "TP": "Menganalisis reaksi redoks dan penerapannya dalam sel elektrokimia (volta dan elektrolisis).\nMenyelesaikan soal kesetimbangan kimia menggunakan tetapan Kc dan Kp.\nMengidentifikasi gugus fungsi dan reaksi senyawa karbon dalam kimia organik."
+      },
+      "Fisika": {
+        "CP": "Peserta didik mampu menganalisis konsep listrik statis dan dinamis, gelombang elektromagnetik, fisika modern, serta mengevaluasi perkembangan teknologi berbasis fisika.",
+        "Materi": "Listrik Dinamis dan Statis, Induksi Elektromagnetik, Fisika Modern dan Radioaktivitas.",
+        "Kompetensi": "Menguasai konsep gerak harmonik sederhana, hukum Termodinamika, dan optik geometris.",
+        "TP": "Menganalisis rangkaian listrik arus searah (DC) menggunakan hukum Kirchhoff.\nMenjelaskan prinsip kerja generator dan transformator berdasarkan induksi elektromagnetik.\nMengevaluasi perkembangan fisika modern (relativitas, efek fotolistrik) dan aplikasi teknologinya."
+      },
+      "Pendidikan Agama dan Budi Pekerti": {
+        "CP": "Peserta didik mampu menganalisis dan mengevaluasi kandungan Al-Qur'an dan Hadis terkait isu kontemporer (elemen Al-Qur'an dan Hadis); menganalisis dan mengevaluasi nilai-nilai akidah Islam dalam kehidupan kontemporer (elemen Akidah); mengembangkan kepribadian muslim yang berakhlak karimah dan berwawasan global/rahmatan lil 'alamin (elemen Akhlak); memahami dan menerapkan fikih muamalah dan jinayah (elemen Fikih); serta mengevaluasi peran peradaban Islam dalam konteks global (elemen Sejarah Peradaban Islam), guna menghadapi isu global (radikalisme, pluralisme) dari perspektif Islam yang moderat dan toleran. [Mengacu pada Kepka BKPDM No. 020 Tahun 2026]",
+        "Materi": "Al-Qur'an dan Hadis tentang Isu Kontemporer, Akidah dan Isu Global, Fikih Muamalah (Jual Beli, Riba, Perbankan Syariah) dan Jinayah, Kepribadian Muslim Kaffah dan Rahmatan Lil 'Alamin, Peran Peradaban Islam di Era Global.",
+        "Kompetensi": "Memahami syariat Islam secara komprehensif beserta relevansinya dengan kehidupan modern.",
+        "TP": "Menganalisis kandungan Al-Qur'an dan Hadis yang relevan dengan isu-isu kontemporer.\nMengevaluasi nilai-nilai akidah Islam dalam menghadapi berbagai isu global (radikalisme, pluralisme) dari perspektif Islam yang moderat.\nMenganalisis hukum muamalah dan jinayah Islam dalam konteks ekonomi syariah dan hukum kontemporer.\nMengimplementasikan nilai-nilai akhlak karimah dan kepribadian rahmatan lil 'alamin dalam kehidupan sehari-hari secara konsisten.\nMengevaluasi peran dan kontribusi peradaban Islam dalam konteks kehidupan global."
+      },
+      "Pendidikan Pancasila": {
+        "CP": "Peserta didik mampu mengevaluasi implementasi nilai-nilai Pancasila dalam kehidupan berbangsa, memahami dinamika sistem pemerintahan Indonesia, serta mengembangkan komitmen sebagai warga negara global yang beridentitas Pancasila.",
+        "Materi": "Sistem Pemerintahan Indonesia, Wawasan Nusantara dan Ketahanan Nasional, Pancasila di Era Global.",
+        "Kompetensi": "Memahami sistem pemerintahan, lembaga negara, dan mekanisme demokrasi Indonesia.",
+        "TP": "Mengevaluasi implementasi nilai-nilai Pancasila dalam berbagai kebijakan pemerintah dan kehidupan masyarakat.\nMenganalisis konsep wawasan nusantara dan ketahanan nasional Indonesia.\nMengembangkan sikap dan perilaku sebagai warga negara global yang tetap beridentitas Pancasila."
+      },
+      "Bahasa Indonesia": {
+        "CP": "Peserta didik mampu memahami, menganalisis, dan mengevaluasi berbagai teks kompleks, serta mampu memproduksi teks akademik dan kreatif yang menunjukkan kemampuan berpikir kritis, bernalar logis, dan berekspresi estetis.",
+        "Materi": "Artikel Ilmiah dan Teks Akademik, Karya Sastra (Novel, Drama), Retorika dan Pidato.",
+        "Kompetensi": "Menguasai penulisan teks akademik, analisis karya sastra, dan teknik presentasi lanjutan.",
+        "TP": "Menyusun artikel ilmiah dengan sistematika penulisan akademik yang benar.\nMenganalisis unsur-unsur intrinsik dan ekstrinsik karya sastra (novel/drama) secara mendalam.\nMempraktikkan teknik pidato persuasif dan presentasi ilmiah di hadapan publik."
+      },
+      "Matematika": {
+        "CP": "Peserta didik mampu memahami dan menerapkan konsep kalkulus diferensial dan integral, vektor, transformasi geometri, serta mengembangkan kemampuan pemodelan matematika untuk menyelesaikan masalah kompleks.",
+        "Materi": "Turunan Fungsi dan Integral, Vektor 3 Dimensi, Transformasi Geometri, Barisan dan Deret.",
+        "Kompetensi": "Menguasai konsep limit fungsi, trigonometri lanjutan, dan matriks.",
+        "TP": "Menentukan turunan fungsi aljabar dan trigonometri serta menggunakannya untuk memecahkan masalah optimasi.\nMenghitung integral fungsi dan menerapkannya untuk menentukan luas dan volume benda putar.\nMenganalisis vektor di ruang tiga dimensi dan operasi-operasinya."
+      },
+      "Bahasa Inggris": {
+        "CP": "Students demonstrate advanced communicative competence in English, produce sophisticated academic and creative texts, critically evaluate diverse media and literary works, and engage confidently in complex discussions and debates.",
+        "Materi": "Academic Writing, Critical Essay, Literary Analysis, Public Speaking and Presentation.",
+        "Kompetensi": "Mastering advanced grammar, academic vocabulary, and complex rhetorical strategies in English.",
+        "TP": "Write a well-researched critical essay on a literary or social topic with proper academic conventions.\nAnalyze and evaluate literary texts using relevant critical approaches.\nDeliver a confident public speech or presentation on a complex topic in English."
+      },
+      "Pendidikan Jasmani, Olahraga, dan Kesehatan (PJOK)": {
+        "CP": "Peserta didik mampu merancang dan mengevaluasi program kebugaran personal, menguasai strategi lanjutan dalam berbagai cabang olahraga, serta mempromosikan gaya hidup sehat dan aktif dalam lingkungan sosial.",
+        "Materi": "Perencanaan Program Latihan Personal, Olahraga Rekreasi dan Prestasi, Kesehatan Mental dan Gaya Hidup Aktif.",
+        "Kompetensi": "Menguasai teknik lanjutan berbagai cabang olahraga dan prinsip-prinsip fisiologi olahraga.",
+        "TP": "Merancang program latihan kebugaran personal yang komprehensif berdasarkan kebutuhan dan tujuan individu.\nMengevaluasi strategi dan taktik dalam pertandingan olahraga secara kritis.\nMempromosikan kesehatan mental dan gaya hidup aktif di lingkungan sekolah dan masyarakat."
+      },
+      "Informatika": {
+        "CP": "Peserta didik mampu mengembangkan solusi teknologi yang inovatif menggunakan pemrograman lanjutan, memahami konsep kecerdasan buatan dan big data, serta berkontribusi secara etis dalam ekosistem digital global.",
+        "Materi": "Pemrograman Lanjutan (OOP), Kecerdasan Buatan dan Machine Learning Dasar, Etika Teknologi dan Keamanan Data.",
+        "Kompetensi": "Menguasai pemrograman prosedural dan berorientasi objek serta desain sistem informasi.",
+        "TP": "Mengembangkan aplikasi menggunakan paradigma pemrograman berorientasi objek (OOP).\nMenjelaskan konsep dasar kecerdasan buatan dan implikasinya dalam kehidupan modern.\nMengevaluasi aspek etika dan keamanan dalam pengembangan dan penggunaan teknologi digital."
+      },
+      "Seni Musik": {
+        "CP": "Peserta didik mampu menciptakan dan memproduksi karya musik yang orisinal dengan kualitas artistik tinggi, mengembangkan karier dan identitas musikal, serta berkontribusi pada perkembangan musik di lingkungan sosial.",
+        "Materi": "Komposisi Musik Orisinal, Produksi Musik Digital, Karier dan Industri Musik.",
+        "Kompetensi": "Menguasai teori musik lanjutan, harmoni, dan teknik penampilan musik tingkat mahir.",
+        "TP": "Menciptakan karya musik orisinal yang mencerminkan identitas artistik yang khas.\nMemproduksi rekaman musik menggunakan teknologi audio digital (DAW).\nMerancang dan melaksanakan pertunjukan musik publik dengan standar profesional."
+      },
+      "Seni Rupa": {
+        "CP": "Peserta didik mampu mengembangkan portofolio karya seni rupa yang kuat, berpikir dan bekerja seperti seorang seniman profesional, serta berkontribusi pada wacana seni visual kontemporer.",
+        "Materi": "Pengembangan Portofolio Seni Rupa, Seni Kontemporer dan Konseptual, Karier di Bidang Seni Visual.",
+        "Kompetensi": "Menguasai teknik lanjutan dalam berbagai medium seni rupa dan analisis karya seni secara kritis.",
+        "TP": "Mengembangkan portofolio karya seni rupa yang koheren dengan pernyataan artistik yang jelas.\nMenciptakan karya seni kontemporer yang merespons isu-isu sosial dan budaya terkini.\nMempresentasikan dan mendiskusikan karya seni dalam forum publik dengan kepercayaan diri."
+      },
+      "Seni Tari": {
+        "CP": "Peserta didik mampu mengembangkan karya tari yang matang secara artistik, memahami manajemen seni pertunjukan, serta berkontribusi pada pelestarian dan pengembangan seni tari dalam konteks budaya global.",
+        "Materi": "Penciptaan Karya Tari Utuh, Manajemen Pertunjukan Tari, Tari dalam Konteks Budaya Global.",
+        "Kompetensi": "Menguasai teknik tari tingkat mahir dan pemahaman mendalam tentang estetika tari.",
+        "TP": "Menciptakan dan mementaskan karya tari utuh yang menunjukkan visi artistik yang matang.\nMerancang dan mengelola produksi pertunjukan tari dari konsep hingga penampilan.\nMenganalisis posisi seni tari Indonesia dalam konteks seni pertunjukan global."
+      },
+      "Seni Teater": {
+        "CP": "Peserta didik mampu mengembangkan kemampuan akting dan penyutradaraan tingkat lanjut, memproduksi pertunjukan teater yang utuh secara profesional, serta memahami peran teater sebagai media ekspresi dan transformasi sosial.",
+        "Materi": "Pemeranan Tingkat Lanjut, Penyutradaraan dan Manajemen Produksi, Teater sebagai Kritik Sosial.",
+        "Kompetensi": "Menguasai berbagai pendekatan akting (Stanislavski, Brecht) dan analisis dramaturgi mendalam.",
+        "TP": "Memerankan tokoh kompleks dengan berbagai teknik akting secara meyakinkan dan konsisten.\nMenyutradarai pertunjukan teater pendek dengan konsep estetika yang koheren.\nMenganalisis fungsi sosial dan kultural teater sebagai media kritik dan transformasi masyarakat."
+      },
+      "Projek Penguatan Profil Pelajar Pancasila (P5)": {
+        "CP": "Peserta didik mampu memimpin dan berkolaborasi dalam proyek inovasi sosial yang berdampak nyata, mengintegrasikan nilai-nilai Profil Pelajar Pancasila dalam solusi yang dihasilkan, serta mengembangkan kapasitas kepemimpinan yang bertanggung jawab.",
+        "Materi": "Kepemimpinan Proyek Sosial, Inovasi Berbasis Riset, Evaluasi Dampak dan Advokasi.",
+        "Kompetensi": "Menguasai metodologi riset, desain proyek, dan komunikasi publik yang efektif.",
+        "TP": "Memimpin proyek inovasi sosial yang merespons tantangan nyata di komunitas dengan pendekatan berbasis riset.\nMengintegrasikan nilai-nilai Profil Pelajar Pancasila dalam seluruh proses dan hasil proyek.\nMengevaluasi dampak proyek secara kritis dan mengadvokasi perubahan yang diperlukan kepada pemangku kepentingan."
+      }
+    }
+  }
+};
+
+/* PROFIL PELAJAR PANCASILA (PPP) PRESET */
+const PPP_PRESET = [
+  "Beriman, Bertakwa kepada Tuhan YME, dan Berakhlak Mulia",
+  "Berkebinekaan Global",
+  "Gotong Royong",
+  "Mandiri",
+  "Bernalar Kritis",
+  "Kreatif"
+];
+
+/* ==========================================
+   2. OPERASIONAL UTAMA APLIKASI
+   ========================================== */
+let currentStep = 0;
+const stepSections = [
+  "step-identity",
+  "step-curriculum",
+  "step-activities",
+  "step-assessment",
+  "step-preview"
+];
+
+window.onload = function() {
+  initFormElements();
+  loadDraftOnStart();
+  updateProgressTracker();
+};
+
+function initFormElements() {
+  // Populate PPP Checkboxes
+  const pppContainer = document.getElementById("ppp-container");
+  pppContainer.innerHTML = "";
+  PPP_PRESET.forEach((ppp, index) => {
+    const id = `ppp-${index}`;
+    pppContainer.innerHTML += `
+      <div>
+        <input type="checkbox" id="${id}" class="chip-checkbox" value="${ppp}" onchange="onInputChange()">
+        <label for="${id}" class="chip-label">
+          <span>${ppp}</span>
+        </label>
+      </div>
+    `;
+  });
+
+  onJenjangChange();
+}
+
+function toggleDarkMode() {
+  document.body.classList.toggle("dark-mode");
+}
+
+function onInputChange() {
+  autoSave();
+  updateProgressTracker();
+}
+
+// Tambahkan pelacakan perubahan untuk semua komponen input secara otomatis
+function registerInputTrackers() {
+  document.querySelectorAll("input, select, textarea").forEach(el => {
+    el.addEventListener("input", onInputChange);
+    el.addEventListener("change", onInputChange);
+  });
+}
+
+function updateProgressTracker() {
+  const fields = [
+    "in-guru", "in-sekolah", "in-topik", "in-kompetensi-awal", "in-sarpras",
+    "in-cp-text", "in-tp-text", "in-pemahaman-bermakna", "in-pemantik",
+    "in-materi", "in-pendaluhuan", "in-inti", "in-penutup", "in-media",
+    "in-asesmen-diag", "in-asesmen-form", "in-asesmen-sum", "in-rubrik",
+    "in-lkpd", "in-refleksi-guru", "in-refleksi-siswa", "in-glosarium", "in-bacaan"
+  ];
+  
+  let filledCount = 0;
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.value.trim() !== "") {
+      filledCount++;
+    }
+  });
+
+  const percent = Math.round((filledCount / fields.length) * 100);
+  document.getElementById("progress-val").textContent = `${percent}%`;
+  document.getElementById("progress-fill").style.width = `${percent}%`;
+}
+
+function validateAllSteps() {
+  const errors = [];
+  const guru = document.getElementById("in-guru").value.trim();
+  const sekolah = document.getElementById("in-sekolah").value.trim();
+  const topik = document.getElementById("in-topik").value.trim();
+  const cp = document.getElementById("in-cp-text").value.trim();
+  const tp = document.getElementById("in-tp-text").value.trim();
+
+  if (!guru) errors.push("Nama Penyusun / Guru masih kosong.");
+  if (!sekolah) errors.push("Satuan Pendidikan / Sekolah masih kosong.");
+  if (!topik) errors.push("Topik Utama Pembelajaran belum ditentukan.");
+  if (!cp) errors.push("Capaian Pembelajaran (CP) belum diisi/pilih dari database.");
+  if (!tp) errors.push("Tujuan Pembelajaran (TP) belum disusun.");
+
+  const validationBox = document.getElementById("form-validation-box");
+  const errorsList = document.getElementById("validation-errors-list");
+  
+  if (errors.length > 0) {
+    errorsList.innerHTML = errors.map(err => `<li>${err}</li>`).join("");
+    validationBox.style.display = "block";
+    return false;
+  } else {
+    validationBox.style.display = "none";
+    return true;
+  }
+}
+
+function onJenjangChange() {
+  const jenjangSelect = document.getElementById("in-jenjang");
+  const faseSelect = document.getElementById("in-fase");
+  const val = jenjangSelect.value;
+
+  faseSelect.innerHTML = "";
+  if (val === "SD") {
+    faseSelect.innerHTML += `<option value="Fase A (Kelas 1-2)">Fase A (Kelas 1-2)</option>`;
+    faseSelect.innerHTML += `<option value="Fase B (Kelas 3-4)">Fase B (Kelas 3-4)</option>`;
+    faseSelect.innerHTML += `<option value="Fase C (Kelas 5-6)">Fase C (Kelas 5-6)</option>`;
+  } else if (val === "SMP") {
+    faseSelect.innerHTML += `<option value="Fase D (Kelas 7-9)">Fase D (Kelas 7-9)</option>`;
+  } else if (val === "SMA") {
+    faseSelect.innerHTML += `<option value="Fase E (Kelas 10)">Fase E (Kelas 10)</option>`;
+    faseSelect.innerHTML += `<option value="Fase F (Kelas 11-12)">Fase F (Kelas 11-12)</option>`;
+  }
+
+  onFaseChange();
+}
+
+function onFaseChange() {
+  const jenjang = document.getElementById("in-jenjang").value;
+  const fase = document.getElementById("in-fase").value;
+  const mapelSelect = document.getElementById("in-mapel");
+
+  mapelSelect.innerHTML = "";
+  if (CP_DATABASE[jenjang] && CP_DATABASE[jenjang][fase]) {
+    const mapels = Object.keys(CP_DATABASE[jenjang][fase]);
+    mapels.forEach(mapel => {
+      mapelSelect.innerHTML += `<option value="${mapel}">${mapel}</option>`;
+    });
+  } else {
+    mapelSelect.innerHTML += `<option value="Umum">Umum / Lainnya</option>`;
+  }
+
+  onMapelChange();
+}
+
+function onMapelChange() {
+  const jenjang = document.getElementById("in-jenjang").value;
+  const fase = document.getElementById("in-fase").value;
+  const mapel = document.getElementById("in-mapel").value;
+  const selector = document.getElementById("in-cp-selector");
+
+  selector.innerHTML = "";
+  if (CP_DATABASE[jenjang] && CP_DATABASE[jenjang][fase] && CP_DATABASE[jenjang][fase][mapel]) {
+    selector.innerHTML += `<option value="auto">Gunakan CP Database Standard (${mapel})</option>`;
+
+    // === AUTO-ISI TOPIK UTAMA dari field Materi database ===
+    const record = CP_DATABASE[jenjang][fase][mapel];
+    const topikInput = document.getElementById("in-topik");
+    if (record.Materi) {
+      topikInput.value = record.Materi;
+    }
+
+    // === AUTO-ISI KOMPETENSI AWAL dari field Kompetensi database ===
+    const kompetensiTextarea = document.getElementById("in-kompetensi-awal");
+    if (record.Kompetensi) {
+      kompetensiTextarea.value = record.Kompetensi;
+    }
+  } else {
+    // Reset jika tidak ada data
+    document.getElementById("in-topik").value = "";
+    document.getElementById("in-kompetensi-awal").value = "";
+  }
+  selector.innerHTML += `<option value="manual">Ketik Manual / Buat Custom CP</option>`;
+
+  applySelectedCP();
+}
+
+function applySelectedCP() {
+  const jenjang = document.getElementById("in-jenjang").value;
+  const fase = document.getElementById("in-fase").value;
+  const mapel = document.getElementById("in-mapel").value;
+  const selectVal = document.getElementById("in-cp-selector").value;
+
+  const cpTextarea = document.getElementById("in-cp-text");
+  const tpTextarea = document.getElementById("in-tp-text");
+  const kompetensiTextarea = document.getElementById("in-kompetensi-awal");
+  const materiTextarea = document.getElementById("in-materi");
+
+  if (selectVal === "auto" && CP_DATABASE[jenjang] && CP_DATABASE[jenjang][fase] && CP_DATABASE[jenjang][fase][mapel]) {
+    const record = CP_DATABASE[jenjang][fase][mapel];
+    cpTextarea.value = record.CP;
+    tpTextarea.value = record.TP;
+    kompetensiTextarea.value = record.Kompetensi;
+    materiTextarea.value = record.Materi;
+  } else if (selectVal === "manual") {
+    cpTextarea.value = "";
+    tpTextarea.value = "";
+    kompetensiTextarea.value = "";
+    materiTextarea.value = "";
+  }
+  onInputChange();
+}
+
+/* ==========================================
+   2b. SARPRAS PRESET DROPDOWN HANDLER
+   ========================================== */
+const SARPRAS_PRESETS = {
+  "minimal": `1. Fasilitas: Ruang kelas reguler yang kondusif dan bersih.\n2. Alat & Bahan: Papan tulis/white board, kapur/spidol board, penggaris, penghapus.\n3. Sumber Belajar: Buku teks siswa, buku panduan guru, LKS/LKPD cetak.`,
+  "dasar": `1. Fasilitas: Ruang kelas dengan pencahayaan dan ventilasi memadai.\n2. Alat & Bahan: Papan tulis, spidol warna-warni, kertas plano/HVS, gunting, lem, penggaris.\n3. Sumber Belajar: Buku teks siswa, buku panduan guru, koran/majalah bekas untuk referensi kontekstual.\n4. Lainnya: Meja kelompok yang dapat disusun fleksibel.`,
+  "digital_terbatas": `1. Fasilitas: Ruang kelas dengan proyektor LCD/LED dan layar proyeksi, instalasi listrik memadai.\n2. Alat Digital: 1 unit laptop/komputer guru, proyektor, speaker aktif, kabel HDMI.\n3. Konektivitas: Hotspot/WiFi sekolah (opsional untuk referensi daring).\n4. Sumber Belajar: Slide presentasi interaktif, video edukasi, buku teks digital (e-book), LKPD cetak.\n5. Pendukung: Papan tulis untuk catatan tambahan.`,
+  "digital_penuh": `1. Fasilitas: Laboratorium komputer atau ruang kelas dengan 1 perangkat per siswa (PC/laptop/Chromebook/tablet).\n2. Alat Digital: Komputer/laptop/tablet per siswa, proyektor/smart TV guru, headset (bila perlu), printer.\n3. Konektivitas: Jaringan internet stabil dan tercukupi untuk seluruh siswa.\n4. Platform/Aplikasi: Google Classroom / LMS sekolah, aplikasi kolaborasi (Padlet, Jamboard, Canva Edu), browser modern.\n5. Sumber Belajar: Konten digital interaktif, video edukasi YouTube Edu, e-modul, kuis online (Quizizz/Kahoot).`,
+  "laboratorium": `1. Fasilitas: Ruang laboratorium IPA/Kimia/Fisika/Biologi yang terstandarisasi dengan lemari penyimpanan bahan.\n2. Alat Percobaan: Mikroskop, tabung reaksi, gelas ukur, pipet, Bunsen/lampu spiritus, statif, klem, termometer, magnet, dan alat sesuai topik.\n3. Bahan Praktikum: Bahan habis pakai sesuai petunjuk LKS praktikum (larutan, sampel, reagen).\n4. Keselamatan: Jas lab, kacamata pelindung, sarung tangan lateks, pemadam kebakaran kecil, kotak P3K.\n5. Sumber Belajar: Buku panduan praktikum, lembar kerja praktikum, referensi ilmiah.`,
+  "olahraga": `1. Fasilitas: Lapangan olahraga (indoor/outdoor), aula serbaguna, atau ruang senam.\n2. Alat Olahraga: Bola (sesuai cabang), net, raket, matras, peluit, stopwatch, cone/marker lapangan.\n3. Perlengkapan Siswa: Pakaian olahraga, sepatu olahraga yang sesuai.\n4. Keselamatan: Kotak P3K, sumber air minum, area pendinginan yang teduh.\n5. Sumber Belajar: Buku/modul PJOK, video demonstrasi teknik olahraga, lembar pengamatan kinerja.`,
+  "seni": `1. Fasilitas: Ruang seni/studio, aula pertunjukan, atau ruang kelas yang dapat diatur fleksibel.\n2. Alat Seni (sesuai bidang):\n   - Seni Rupa: Kanvas/kertas gambar, kuas, cat air/acrylic, pensil warna, spidol, clay.\n   - Seni Musik: Alat musik melodis (pianika/recorder/gitar), sound system, partitur.\n   - Seni Tari: Karpet/lantai bersih, sound system, cermin (bila ada), kostum sederhana.\n   - Seni Teater: Properti panggung sederhana, naskah drama, sound system, pencahayaan dasar.\n3. Sumber Belajar: Buku teks seni budaya, video referensi pertunjukan, panduan teknik berkarya.`,
+  "outdoor": `1. Fasilitas: Area terbuka sekolah (taman, kebun sekolah, halaman), gazebo/saung belajar, akses ke lingkungan sekitar sekolah.\n2. Alat & Bahan: Alat tulis portabel, papan jalan/clipboard, lup/kaca pembesar, alat ukur sederhana, kantong plastik sampel, kamera HP.\n3. Keselamatan: Topi, sunscreen, pakaian yang nyaman, P3K portabel, pengawasan memadai.\n4. Sumber Belajar: Lembar observasi lapangan (LKPD), panduan lapangan, referensi spesies/objek lingkungan.\n5. Lainnya: Izin penggunaan area, pemberitahuan kepada satpam/petugas terkait.`,
+  "custom": ``
+};
+
+function onSarprasPresetChange() {
+  const preset = document.getElementById("in-sarpras-preset").value;
+  const sarprasTextarea = document.getElementById("in-sarpras");
+  
+  if (preset === "custom") {
+    sarprasTextarea.value = "";
+    sarprasTextarea.placeholder = "Tuliskan kebutuhan sarana, prasarana, fasilitas, dan sumber belajar secara manual...";
+    sarprasTextarea.focus();
+  } else if (preset && SARPRAS_PRESETS[preset] !== undefined) {
+    sarprasTextarea.value = SARPRAS_PRESETS[preset];
+  }
+  onInputChange();
+}
+
+/* ==========================================
+   3. SMART GENERATOR ENGINE (ZERO-API ENGINE)
+   ========================================== */
+
+// TAHAP 1 & 2 GENERATOR
+function autoGenerateStep2AndMore() {
+  const cpText = document.getElementById("in-cp-text").value.trim();
+  const topik = document.getElementById("in-topik").value.trim();
+  const mapel = document.getElementById("in-mapel").value;
+  
+  if (!cpText) {
+    showToast("⚠️ Silakan isi atau pilih rumusan CP terlebih dahulu!");
+    return;
+  }
+
+  showToast("⚡ Menjalankan Analisis Kurikulum...");
+
+  // Generate Kompetensi Awal
+  const kompetensiTextarea = document.getElementById("in-kompetensi-awal");
+  if (!kompetensiTextarea.value.trim()) {
+    kompetensiTextarea.value = `Sebelum mempelajari topik ${topik}, peserta didik diharapkan telah menguasai:\n1. Konsep dasar pemahaman umum yang melatarbelakangi materi ${mapel}.\n2. Keterampilan prasyarat terkait analisis mendasar dari lingkup materi ${topik}.\n3. Keberanian beropini dan bertanya mengenai fenomena sederhana di lingkungan sekitar.`;
+  }
+
+  // Generate TP
+  const tpTextarea = document.getElementById("in-tp-text");
+  const kompetensiList = ["memahami", "menganalisis", "menyelesaikan", "menuliskan", "mengidentifikasi", "mendeskripsikan", "menerapkan", "menjelaskan", "menguraikan"];
+  let sentences = cpText.split(/[.!?]/);
+  let generatedTPs = [];
+
+  sentences.forEach(sentence => {
+    let matchedVerb = "";
+    kompetensiList.forEach(verb => {
+      if (sentence.toLowerCase().includes(verb)) {
+        matchedVerb = verb.charAt(0).toUpperCase() + verb.slice(1);
+      }
+    });
+
+    if (matchedVerb && sentence.length > 20) {
+      let cleanSentence = sentence.replace(/peserta didik/gi, "").trim();
+      cleanSentence = cleanSentence.replace(/dapat|mampu|memiliki kemampuan/gi, "").trim();
+      generatedTPs.push(`Peserta didik mampu ${cleanSentence}.`);
+    }
+  });
+
+  if (generatedTPs.length === 0) {
+    generatedTPs.push(`Mengidentifikasi esensi materi dasar berkaitan dengan ${topik}.`);
+    generatedTPs.push(`Menerapkan penalaran kritis untuk menganalisis problematika riil pada ${topik}.`);
+    generatedTPs.push(`Memecahkan studi kasus atau rancangan aktivitas berkaitan dengan ${topik}.`);
+  }
+  tpTextarea.value = generatedTPs.join("\n");
+
+  // Generate Pemahaman Bermakna
+  const pemahamanTextarea = document.getElementById("in-pemahaman-bermakna");
+  pemahamanTextarea.value = `Setelah mempelajari materi ini, siswa akan memperoleh pemahaman bermakna berupa:\n1. Mengetahui bahwa pemahaman tentang "${topik}" merupakan landasan berpikir analitis dalam memecahkan masalah keseharian.\n2. Mampu membuat keputusan rasional dan berbasis fakta ilmiah yang relevan terkait materi ${mapel}.\n3. Meningkatkan rasa percaya diri untuk terus mengeksplorasi ilmu pengetahuan secara kolaboratif.`;
+
+  // Generate Pertanyaan Pemantik
+  const pemantikTextarea = document.getElementById("in-pemantik");
+  pemantikTextarea.value = `1. Bayangkan jika kita tidak menguasai atau mengenal konsep dari "${topik}" dalam kehidupan sehari-hari, hambatan apa yang kira-kira akan terjadi?\n2. Mengapa menurut kalian penting bagi kita untuk memahami sistem serta cara kerja dari konsep ${topik}?\n3. Bagaimana hubungan antara pemahaman ini dengan kualitas pengambilan keputusan hidup kalian?`;
+
+  // Generate Rangkuman Pokok Materi Pembelajaran — diturunkan langsung dari rumusan CP awal
+  // agar seluruh isian step berikutnya benar-benar terintegrasi dari CP, bukan hanya dari database preset.
+  const materiInput = document.getElementById("in-materi");
+  if (!materiInput.value.trim()) {
+    // Buang dulu catatan referensi hukum dalam tanda kurung siku, misal "[Mengacu pada Kepka BKPDM No. 020 Tahun 2026]",
+    // agar tidak ikut terpotong oleh proses split kalimat di bawah.
+    const cpBersih = cpText.replace(/\[[^\]]*\]/g, "").trim();
+
+    // Ambil 1-2 potongan kalimat bermakna pertama dari CP sebagai dasar rangkuman pokok materi
+    let bagianCP = cpBersih.split(/[.!?]/).map(s => s.trim()).filter(s => s.length > 15).slice(0, 2);
+    if (bagianCP.length === 0) bagianCP = [cpBersih];
+    let intiCP = bagianCP.join(". ");
+    intiCP = intiCP
+      .replace(/peserta didik/gi, "")
+      .replace(/\b(dapat|mampu|memiliki kemampuan|menunjukkan pemahaman dan)\b/gi, "")
+      .replace(/\s{2,}/g, " ")
+      .trim();
+    // Huruf awal kapital agar rapi sebagai judul pokok materi
+    intiCP = intiCP.charAt(0).toUpperCase() + intiCP.slice(1);
+    if (!/[.!?]$/.test(intiCP)) intiCP += ".";
+    materiInput.value = intiCP;
+  }
+
+  // Generate Sarpras otomatis — pilih paket "Digital Terbatas" sebagai default cerdas
+  const sarprasTextarea = document.getElementById("in-sarpras");
+  const sarprasPreset = document.getElementById("in-sarpras-preset");
+  if (!sarprasTextarea.value.trim()) {
+    sarprasPreset.value = "digital_terbatas";
+    sarprasTextarea.value = SARPRAS_PRESETS["digital_terbatas"];
+  }
+
+  // Rekomendasikan PPP secara otomatis berbasis Mapel/Topik
+  const pppsToSelect = ["Bernalar Kritis", "Kreatif", "Gotong Royong", "Mandiri"];
+  document.querySelectorAll("#ppp-container input[type='checkbox']").forEach(cb => {
+    cb.checked = pppsToSelect.includes(cb.value);
+  });
+
+  showToast("✨ Langkah 2 & Sarpras Berhasil Di-generate!");
+  onInputChange();
+}
+
+// TAHAP 2 & 3 GENERATOR (SKENARIO & MEDIA)
+function autoGenerateStep3Activities() {
+  const model = document.getElementById("in-model").value;
+  const topik = document.getElementById("in-topik").value.trim();
+  const mapel = document.getElementById("in-mapel").value;
+
+  showToast("⚡ Menyusun Rencana Pembelajaran Aktif...");
+
+  // Skenario Pendahuluan
+  const pendaluhuan = document.getElementById("in-pendaluhuan");
+  pendaluhuan.value = `1. Orientasi: Guru mengkondisikan ruang kelas, memberikan salam pembuka hangat, berdoa bersama dipimpin ketua kelas, serta melakukan presensi kehadiran siswa.\n2. Motivasi & Apersepsi: Guru mengaitkan ingatan siswa dengan materi prasyarat. Menjelaskan besarnya manfaat praktis menguasai materi "${topik}" dalam kehidupan bermasyarakat.\n3. Penyampaian Target: Guru membacakan Tujuan Pembelajaran dan Alur Tujuan Pembelajaran hari ini beserta skema penilaian kelompok.`;
+
+  // Skenario Inti (Struktur Deep Learning)
+  const inti = document.getElementById("in-inti");
+  let sintaksInti = "";
+
+  if (model.includes("PBL")) {
+    sintaksInti = `* Tahap 1: Orientasi Siswa pada Masalah (Kognitif Aktif)\n  Guru menampilkan stimulus berupa studi kasus nyata mengenai dinamika ${topik}. Siswa dituntut mengamati dan mencatat pertanyaan kritis.\n\n* Tahap 2: Mengorganisasikan Siswa untuk Belajar (Koneksi & Kolaborasi)\n  Siswa dibagi menjadi kelompok kecil berisi 4-5 siswa secara heterogen. Setiap kelompok menerima Lembar Kerja (LKPD) yang menantang.\n\n* Tahap 3: Membimbing Penyelidikan Mandiri/Kelompok (Eksplorasi Mendalam)\n  Siswa mencari informasi dari modul, internet, atau buku rujukan. Guru berputar memberikan arahan analitis (scaffolding) tanpa mendominasi.\n\n* Tahap 4: Mengembangkan & Menyajikan Hasil Karya (Kreasi & Artikulasi)\n  Setiap tim mendiskusikan konklusi masalah dan menyusun hasil pemikiran pada lembar kertas plano atau draf tulisan.\n\n* Tahap 5: Menganalisis & Mengevaluasi Proses (Refleksi Kolektif)\n  Perwakilan tim menyajikan kesimpulan kelompoknya. Kelompok lain dipersilakan melakukan debat sehat, diakhiri penguatan teoretis oleh guru.`;
+  } else if (model.includes("PjBL")) {
+    sintaksInti = `* Tahap 1: Pertanyaan Mendasar (Pemantik Karsa)\n  Guru memaparkan tantangan penciptaan karya kreatif/proyek terkait "${topik}" yang solutif bagi lingkungan sekolah.\n\n* Tahap 2: Mendesain Perencanaan Proyek (Pengorganisasian Mandiri)\n  Kelompok merancang langkah kerja, mendata pembagian tugas pengerjaan proyek, dan memilih alat bahan penunjang.\n\n* Tahap 3: Menyusun Jadwal Pembuatan (Komitmen Waktu)\n  Siswa menyusun target waktu pencapaian per fase pengerjaan proyek secara realistis.\n\n* Tahap 4: Memonitor Keaktifan & Perkembangan Proyek\n  Guru memantau kedalaman proses perancangan, mendampingi proses kreasi, dan membina keaktifan kolaborasi siswa.\n\n* Tahap 5: Menguji Hasil (Apresiasi Karya)\n  Kelompok menampilkan atau mempresentasikan produk/karya nyata yang telah selesai di depan kelas.\n\n* Tahap 6: Evaluasi Pengalaman Belajar (Feedback Konstruktif)\n  Siswa merefleksikan seluruh proses pembuatan proyek dan menerima penguatan konseptual dari guru.`;
+  } else {
+    sintaksInti = `* Tahap 1: Stimulasi/Pemberian Rangsang\n  Guru memicu pemikiran siswa melalui demonstrasi visual terkait materi ${topik}.\n\n* Tahap 2: Identifikasi Masalah\n  Siswa diberikan ruang untuk mengidentifikasi sebanyak mungkin pertanyaan hipotetis dari demonstrasi tersebut.\n\n* Tahap 3: Pengumpulan Data\n  Siswa membaca bahan bacaan rujukan guna mencari jawaban objektif atas hipotesis awal mereka.\n\n* Tahap 4: Pengolahan Data\n  Siswa mengklasifikasikan data dan merumuskan penalaran konseptual secara mandiri.\n\n* Tahap 5: Pembuktian & Generalisasi\n  Siswa mempresentasikan hasil penalaran teoritis mereka di papan tulis untuk kemudian dikonfirmasi oleh guru secara utuh.`;
+  }
+  inti.value = sintaksInti;
+
+  // Skenario Penutup
+  const penutup = document.getElementById("in-penutup");
+  penutup.value = `1. Penyimpulan Mandiri: Siswa dibimbing merumuskan kesimpulan teoretis mutakhir dari seluruh aktivitas pembelajaran hari ini.\n2. Evaluasi Formatif Kognitif: Siswa mengerjakan kuis instan secara mandiri untuk mengukur ketercapaian kognisi mereka.\n3. Tindak Lanjut & Refleksi: Guru membagikan lembar refleksi emosional pembelajaran, menyampaikan gambaran materi pertemuan berikutnya, dan menutup kelas dengan doa bersama.`;
+
+  // Media Pembelajaran
+  const media = document.getElementById("in-media");
+  media.value = `1. Media Digital: Slide Presentasi interaktif berbasis Canva, video edukasi ilmiah terkait "${topik}", aplikasi visualisasi grafis online.\n2. Media Fisik: Kartu konsep/kata kunci, benda manipulatif, poster klasifikasi.\n3. Sumber Cetak: Buku panduan resmi Kementerian Pendidikan dan Kebudayaan RI, lembar ringkasan materi suplemen guru.`;
+
+  showToast("✨ Skenario Pembelajaran Berhasil Disusun!");
+  onInputChange();
+}
+
+// TAHAP 4 GENERATOR (ASESMEN, LKPD, BAHAN & LAINNYA)
+function autoGenerateStep4Materials() {
+  const topik = document.getElementById("in-topik").value.trim();
+  const mapel = document.getElementById("in-mapel").value;
+
+  showToast("⚡ Menyusun Bahan Asesmen & Lampiran...");
+
+  // Asesmen Diagnostik
+  const diag = document.getElementById("in-asesmen-diag");
+  diag.value = `Pertanyaan Pemantik Kognitif Kesiapan Kelas:\n1. Menurut pendapatmu, apakah "${topik}" itu sesuatu yang rumit atau sederhana? Berikan alasannya.\n2. Di manakah kamu pernah melihat penerapan nyata dari "${topik}" sebelumnya?\n3. Apa harapan pribadimu setelah mempelajari bab ini?`;
+
+  // Asesmen Formatif
+  const form = document.getElementById("in-asesmen-form");
+  form.value = `1. Observasi Sikap: Lembar penilaian profil gotong royong dan kemandirian siswa saat melaksanakan diskusi kelompok.\n2. Formatif Tertulis Proses: Latihan esai ringkas berisi 3 nomor yang disisipkan di tengah aktivitas kelas.\n3. Kinerja/Presentasi: Penilaian keberanian berbicara, retorika penyampaian solusi, dan ketepatan argumen kelompok saat presentasi.`;
+
+  // Asesmen Sumatif
+  const sum = document.getElementById("in-asesmen-sum");
+  sum.value = `Evaluasi Sumatif Akhir Bab (Tes Pilihan Ganda & Esai Terstruktur):\n\nSoal Pilihan Ganda (Contoh):\n1. Manakah dari pilihan berikut yang paling menggambarkan esensi dari konsep dasar "${topik}"?\n   a. Penerapan fungsional umum\n   b. Konseptual abstrak tanpa implementasi\n   c. Fenomena luar angkasa biasa\n\nSoal Esai:\n2. Uraikan secara sistematis dan detail mengapa konsep "${topik}" memiliki peran fundamental di kehidupan kita sehari-hari!`;
+
+  // Rubrik Penilaian Tabel
+  const rubrik = document.getElementById("in-rubrik");
+  rubrik.value = `SANGAT BAIK (Skor 4):\n- Menunjukkan penguasaan konsep yang utuh dan mendalam, mampu memberikan analisis kritis yang orisinal, serta aktif membantu rekan sejawat.\n\nBAIK (Skor 3):\n- Menunjukkan penguasaan konsep yang memadai, mampu menganalisis secara logis, dan aktif dalam kerja sama kelompok.\n\nCUKUP (Skor 2):\n- Mulai menunjukkan pemahaman dasar namun masih memerlukan bimbingan guru dalam melakukan analisis teoretis.\n\nPERLU BIMBINGAN (Skor 1):\n- Belum mampu memahami konsep dasar serta pasif dalam interaksi kerja kelompok kelas.`;
+
+  // LKPD
+  const lkpd = document.getElementById("in-lkpd");
+  lkpd.value = `LEMBAR KERJA PESERTA DIDIK (LKPD)\n\nMata Pelajaran: ${mapel}\nTopik Pokok: ${topik}\nNama Anggota Kelompok: ........................\n\nPETUNJUK PENGERJAAN:\n1. Diskusikan fenomena materi berikut bersama rekan sekelompok Anda.\n2. Tuliskan hipotesis awal mengenai solusi alternatif dari kasus ${topik} di bawah ini.\n3. Jawablah pertanyaan evaluatif berikut:\n   - Berikan 2 contoh konkret implementasi nyata dari materi ini di lingkungan sekitar Anda!\n   - Uraikan 1 hambatan utama dan cara penyelesaiannya!\n\n4. Kumpulkan hasil diskusi ini kepada guru di akhir pertemuan kelas.`;
+
+  // Refleksi Guru & Siswa
+  const refGuru = document.getElementById("in-refleksi-guru");
+  refGuru.value = `1. Apakah target 80% ketercapaian tujuan pembelajaran hari ini sudah dirasakan tuntas?\n2. Hambatan teknis apa yang paling mengganggu dalam penyampaian materi hari ini?\n3. Strategi pengajaran apa yang akan saya ubah untuk kelas esok hari?`;
+
+  const refSiswa = document.getElementById("in-refleksi-siswa");
+  refSiswa.value = `1. Bagian materi mana dari "${topik}" yang paling menantang dan belum sepenuhnya saya kuasai?\n2. Jika diberikan skala 1-10, seberapa puas saya dengan kontribusi kelompok saya tadi?\n3. Apa tindakan konkret yang akan saya ambil untuk memperdalam pemahaman ini secara mandiri?`;
+
+  // Glosarium
+  const glosarium = document.getElementById("in-glosarium");
+  glosarium.value = `1. ${topik}: Pokok bahasan utama yang dipelajari pada bab ini.\n2. Kurikulum Merdeka: Kurikulum pendidikan nasional baru yang mengedepankan fleksibilitas, minat bakat, dan pembentukan karakter Pancasila.\n3. Deep Learning: Pendekatan pembelajaran mendalam yang berfokus pada keterlibatan kognitif siswa secara aktif.\n4. Asesmen Formatif: Evaluasi proses belajar siswa guna memperbaiki metode pembelajaran harian.`;
+
+  // Bahan Bacaan
+  const bacaan = document.getElementById("in-bacaan");
+  bacaan.value = `Bahan Bacaan Guru:\n- Buku Guru kurikulum merdeka edisi mutakhir, jurnal pedagogi terapan, serta modul panduan pembelajaran bermakna untuk materi ${mapel}.\n\nBahan Bacaan Peserta Didik:\n- Ringkasan materi dasar bab ${topik} pada buku cetak siswa, infografis konsep visual sederhana, serta artikel edukasi singkat dari portal belajar nasional resmi.`;
+
+  showToast("✨ Bahan Evaluasi & Lampiran Sukses Disusun!");
+  onInputChange();
+}
+
+/* ==========================================
+   4. SISTEM PERGERAKAN WIZARD (NAVIGATION)
+   ========================================== */
+function goToStep(stepIndex) {
+  if (stepIndex < 0 || stepIndex >= stepSections.length) return;
+
+  // Jika melangkah ke pratinjau (step 4), lakukan validasi formulir terlebih dahulu
+  if (stepIndex === 4) {
+    const isFormValid = validateAllSteps();
+    if (!isFormValid) {
+      showToast("⚠️ Mohon lengkapi bagian identitas & kurikulum!");
+      // Tetap lanjutkan tapi tampilkan bar merah validasi di atas kertas
+    }
+  }
+
+  // Nonaktifkan semua bagian
+  stepSections.forEach(id => {
+    document.getElementById(id).classList.remove("active");
+  });
+
+  // Aktifkan bagian yang dipilih
+  document.getElementById(stepSections[stepIndex]).classList.add("active");
+
+  // Perbarui status menu navigasi samping
+  const stepItems = document.querySelectorAll(".step-item");
+  stepItems.forEach((item, index) => {
+    item.classList.remove("active");
+    if (index === stepIndex) {
+      item.classList.add("active");
+    }
+    if (index < stepIndex) {
+      item.classList.add("completed");
+    } else {
+      item.classList.remove("completed");
+    }
+  });
+
+  currentStep = stepIndex;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Jika masuk ke langkah pratinjau, lakukan kompilasi dokumen otomatis
+  if (stepSections[stepIndex] === "step-preview") {
+    compileAndShowPreview();
+  }
+}
+
+function nextStep() {
+  goToStep(currentStep + 1);
+}
+
+function prevStep() {
+  goToStep(currentStep - 1);
+}
+
+/* ==========================================
+   5. AUTO-COMPILER MODUL AJAR (PREVIEW MAKER)
+   ========================================== */
+function compileAndShowPreview() {
+  const previewSheet = document.getElementById("preview-sheet");
+  
+  // Ambil semua data input
+  const guru = document.getElementById("in-guru").value;
+  const sekolah = document.getElementById("in-sekolah").value;
+  const jenjang = document.getElementById("in-jenjang").value;
+  const fase = document.getElementById("in-fase").value;
+  const mapel = document.getElementById("in-mapel").value;
+  const semester = document.getElementById("in-semester").value;
+  const alokasi = document.getElementById("in-alokasi").value;
+  const topik = document.getElementById("in-topik").value;
+  const kompetensiAwal = document.getElementById("in-kompetensi-awal").value;
+  const sarpras = document.getElementById("in-sarpras").value;
+  const ppps = getSelectedPPPs();
+  const cpText = document.getElementById("in-cp-text").value;
+  const tpText = document.getElementById("in-tp-text").value;
+  const pemahamanBermakna = document.getElementById("in-pemahaman-bermakna").value;
+  const pemantik = document.getElementById("in-pemantik").value;
+  const materi = document.getElementById("in-materi").value;
+  const model = document.getElementById("in-model").value;
+  const pendaluhuan = document.getElementById("in-pendaluhuan").value;
+  const inti = document.getElementById("in-inti").value;
+  const penutup = document.getElementById("in-penutup").value;
+  const media = document.getElementById("in-media").value;
+  const asesmenDiag = document.getElementById("in-asesmen-diag").value;
+  const asesmenForm = document.getElementById("in-asesmen-form").value;
+  const asesmenSum = document.getElementById("in-asesmen-sum").value;
+  const rubrik = document.getElementById("in-rubrik").value;
+  const lkpd = document.getElementById("in-lkpd").value;
+  const refleksiGuru = document.getElementById("in-refleksi-guru").value;
+  const refleksiSiswa = document.getElementById("in-refleksi-siswa").value;
+  const glosarium = document.getElementById("in-glosarium").value;
+  const bacaan = document.getElementById("in-bacaan").value;
+
+  const formatList = (text) => {
+    if (!text) return "<em>Belum terisi</em>";
+    const lines = text.split("\n").filter(l => l.trim() !== "");
+    return `<ul>` + lines.map(line => {
+      const cleanLine = line.replace(/^\d+[\.\-\)]\s*/, "");
+      return `<li>${cleanLine}</li>`;
+    }).join("") + `</ul>`;
+  };
+
+  const formatTextWithBreaks = (text) => {
+    if (!text) return "<em>Belum terisi</em>";
+    return text.replace(/\n/g, "<br>");
+  };
+
+  const formatRubrikTable = (rubrikText) => {
+    if (!rubrikText) return "<em>Belum terisi</em>";
+    // Konversi deskripsi rubrik menjadi baris tabel secara mekanis
+    const lines = rubrikText.split("\n\n").filter(p => p.trim() !== "");
+    let tableRows = "";
+    lines.forEach(p => {
+      const parts = p.split(":\n");
+      const kriteria = parts[0] || "Kriteria";
+      const deskripsi = parts[1] || p;
+      tableRows += `<tr>
+        <td style="width: 30%; font-weight: bold; background-color:#fafafa;">${kriteria}</td>
+        <td>${deskripsi.replace(/\n/g, "<br>")}</td>
+      </tr>`;
+    });
+    return `<table><thead><tr><th>Skor / Tingkat Capaian</th><th>Kriteria Indikator Kinerja</th></tr></thead><tbody>${tableRows}</tbody></table>`;
+  };
+
+  // Bangun Struktur Lembar HTML Modul Ajar (Premium Academic Look)
+  let htmlContent = `
+    <div style="text-align: center; border-bottom: 3px double #111111; padding-bottom: 1.5rem; margin-bottom: 2rem;">
+      <h1 style="margin: 0; font-family: 'Playfair Display', Georgia, serif; font-size: 20pt; font-weight: bold; letter-spacing: 0.5px;">MODUL AJAR KURIKULUM MERDEKA</h1>
+      <p style="margin: 5px 0 0 0; font-size: 11pt; text-transform: uppercase; font-family: sans-serif; letter-spacing: 1px; color: #444;">MATA PELAJARAN: ${mapel} - ${fase}</p>
+    </div>
+
+    <h2>I. INFORMASI UMUM</h2>
+    <table>
+      <tr>
+        <td style="width: 35%; font-weight: bold;">Nama Penyusun / Guru</td>
+        <td style="width: 65%;">${guru}</td>
+      </tr>
+      <tr>
+        <td style="font-weight: bold;">Satuan Pendidikan</td>
+        <td>${sekolah}</td>
+      </tr>
+      <tr>
+        <td style="font-weight: bold;">Jenjang / Fase / Kelas</td>
+        <td>${jenjang} / ${fase}</td>
+      </tr>
+      <tr>
+        <td style="font-weight: bold;">Semester / Alokasi Waktu</td>
+        <td>Semester ${semester} / ${alokasi}</td>
+      </tr>
+      <tr>
+        <td style="font-weight: bold;">Topik Utama Pembelajaran</td>
+        <td style="font-weight: bold; color: #111;">${topik}</td>
+      </tr>
+      <tr>
+        <td style="font-weight: bold;">Model Pembelajaran</td>
+        <td>${model}</td>
+      </tr>
+    </table>
+
+    <h3>A. Kompetensi Awal (Prasyarat)</h3>
+    <p>${formatTextWithBreaks(kompetensiAwal)}</p>
+
+    <h3>B. Sarana & Prasarana</h3>
+    <p>${formatTextWithBreaks(sarpras)}</p>
+
+    <h3>C. Profil Pelajar Pancasila (PPP)</h3>
+    <p>${ppps.length > 0 ? ppps.join(", ") : "<em>Belum ada PPP terpilih</em>"}</p>
+
+    <div class="page-break"></div>
+
+    <h2>II. KOMPONEN INTI</h2>
+    
+    <h3>A. Capaian Pembelajaran (CP)</h3>
+    <p style="font-style: italic; background: #fdfdfd; padding: 1rem; border-left: 3px solid #222; margin-bottom: 1.5rem;">"${cpText || 'Belum diisi'}"</p>
+
+    <h3>B. Tujuan Pembelajaran (TP)</h3>
+    ${formatList(tpText)}
+
+    <h3>C. Pemahaman Bermakna</h3>
+    <p>${formatTextWithBreaks(pemahamanBermakna)}</p>
+
+    <h3>D. Pertanyaan Pemantik</h3>
+    <p>${formatTextWithBreaks(pemantik)}</p>
+
+    <h3>E. Pokok Ringkasan Materi Pembelajaran</h3>
+    <p>${formatTextWithBreaks(materi)}</p>
+
+    <div class="page-break"></div>
+
+    <h2>III. SKENARIO KEGIATAN PEMBELAJARAN</h2>
+    
+    <h3>A. Kegiatan Pendahuluan</h3>
+    <div style="background: #fafafa; border: 1px solid #ddd; padding: 1rem; border-radius: 4px; margin-bottom: 1.5rem;">
+      ${formatTextWithBreaks(pendaluhuan)}
+    </div>
+
+    <h3>B. Kegiatan Inti (Deep Learning Process)</h3>
+    <div style="background: #ffffff; border: 1px solid #ddd; padding: 1.5rem; border-radius: 4px; line-height: 1.7; margin-bottom: 1.5rem;">
+      ${formatTextWithBreaks(inti)}
+    </div>
+
+    <h3>C. Kegiatan Penutup</h3>
+    <div style="background: #fafafa; border: 1px solid #ddd; padding: 1rem; border-radius: 4px; margin-bottom: 1.5rem;">
+      ${formatTextWithBreaks(penutup)}
+    </div>
+
+    <h3>D. Media & Sumber Belajar</h3>
+    <p>${formatTextWithBreaks(media)}</p>
+
+    <div class="page-break"></div>
+
+    <h2>IV. ASESMEN & EVALUASI</h2>
+    
+    <h3>A. Asesmen Diagnostik (Kesiapan Kelas)</h3>
+    <p>${formatTextWithBreaks(asesmenDiag)}</p>
+
+    <h3>B. Asesmen Formatif (Proses Pembelajaran)</h3>
+    <p>${formatTextWithBreaks(asesmenForm)}</p>
+
+    <h3>C. Asesmen Sumatif (Kriteria Pencapaian Akhir)</h3>
+    <p>${formatTextWithBreaks(asesmenSum)}</p>
+
+    <h3>D. Rubrik Penilaian Kinerja</h3>
+    ${formatRubrikTable(rubrik)}
+
+    <div class="page-break"></div>
+
+    <h2>V. REFLEKSI PEMBELAJARAN</h2>
+    
+    <h3>A. Refleksi Pendidik (Guru)</h3>
+    <p>${formatTextWithBreaks(refleksiGuru)}</p>
+
+    <h3>B. Refleksi Peserta Didik</h3>
+    <p>${formatTextWithBreaks(refleksiSiswa)}</p>
+
+    <h2>VI. GLOSARIUM & BAHAN BACAAN</h2>
+    
+    <h3>A. Glosarium</h3>
+    <p>${formatTextWithBreaks(glosarium)}</p>
+
+    <h3>B. Bahan Bacaan Tambahan</h3>
+    <p>${formatTextWithBreaks(bacaan)}</p>
+
+    <div class="page-break"></div>
+
+    <h2>LAMPIRAN: LEMBAR KERJA PESERTA DIDIK (LKPD)</h2>
+    <div style="border: 2px solid #222; padding: 2rem; background: #fff; min-height: 400px; margin-top: 1rem;">
+      <h3 style="text-align: center; text-transform: uppercase; margin-top: 0; border-bottom: 2px solid #222; padding-bottom: 0.5rem; font-size:14pt;">LEMBAR KERJA PESERTA DIDIK (LKPD)</h3>
+      <p style="font-family: var(--font-mono); font-size: 10pt; text-align: center;">Topik: ${topik} | Mata Pelajaran: ${mapel} | Kelas: ${fase}</p>
+      <div style="margin-top: 2rem;">
+        ${formatTextWithBreaks(lkpd)}
+      </div>
+    </div>
+
+    <div class="signature-block">
+      <div class="sig-col">
+        <p>Mengetahui,</p>
+        <p>Kepala Sekolah Satuan Pendidikan</p>
+        <div class="sig-space"></div>
+        <p style="text-decoration: underline; font-weight: bold;">___________________________</p>
+        <p>NIP. ........................................</p>
+      </div>
+      <div class="sig-col">
+        <p>Jakarta, ${new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'})}</p>
+        <p>Guru Mata Pelajaran / Penyusun</p>
+        <div class="sig-space"></div>
+        <p style="text-decoration: underline; font-weight: bold;">${guru}</p>
+        <p>NIP. ........................................</p>
+      </div>
+    </div>
+  `;
+
+  previewSheet.innerHTML = htmlContent;
+}
+
+function getSelectedPPPs() {
+  let selected = [];
+  document.querySelectorAll("#ppp-container input[type='checkbox']").forEach(cb => {
+    if (cb.checked) selected.push(cb.value);
+  });
+  return selected;
+}
+
+/* ==========================================
+   6. EKSPOR WORD & PDF OFFLINE (ZERO DEPENDENCY)
+   ========================================== */
+function exportToWord() {
+  const sheetContent = document.getElementById("preview-sheet").innerHTML;
+  const topik = document.getElementById("in-topik").value || "Kurikulum_Merdeka";
+
+  const cssStyle = `
+    <style>
+      body { font-family: 'Times New Roman', Times, serif; font-size: 11pt; line-height: 1.5; color: #000000; }
+      h1 { font-family: 'Times New Roman', Arial, sans-serif; font-size: 18pt; text-align: center; text-transform: uppercase; margin-bottom: 24pt; }
+      h2 { font-family: 'Times New Roman', Arial, sans-serif; font-size: 14pt; border-bottom: 2px solid #000000; margin-top: 20pt; padding-bottom: 3pt; text-transform: uppercase; }
+      h3 { font-family: 'Times New Roman', Arial, sans-serif; font-size: 11pt; font-weight: bold; margin-top: 12pt; }
+      table { border-collapse: collapse; width: 100%; margin-bottom: 12pt; }
+      table, th, td { border: 1px solid #000000; }
+      th { background-color: #F2F2F2; padding: 6pt; font-weight: bold; text-align: left; }
+      td { padding: 6pt; vertical-align: top; }
+      ul, ol { margin-top: 6pt; margin-bottom: 12pt; padding-left: 18pt; }
+      li { margin-bottom: 4pt; }
+      p { margin-top: 0; margin-bottom: 6pt; text-align: justify; }
+      .signature-block { margin-top: 36pt; display: flex; justify-content: space-between; }
+      .sig-col { text-align: center; width: 45%; }
+      .sig-space { height: 60pt; }
+      .page-break { page-break-before: always; }
+    </style>
+  `;
+
+  // XML Word wrapper untuk menghasilkan .docx yang kompatibel penuh
+  const htmlDocument = `
+    <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+    <head>
+      <meta charset="utf-8">
+      <title>Modul Ajar</title>
+      ${cssStyle}
+    </head>
+    <body>
+      ${sheetContent}
+    </body>
+    </html>
+  `;
+
+  const blob = new Blob(['\ufeff' + htmlDocument], { type: 'application/msword;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `Modul_Ajar_${topik.replace(/\s+/g, '_')}.doc`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  
+  showToast("📦 Dokumen Word Berhasil Diunduh!");
+}
+
+function printPDF() {
+  showToast("🖨️ Membuka dialog pencetakan sistem...");
+  setTimeout(() => {
+    window.print();
+  }, 300);
+}
+
+function copyDocumentText() {
+  const text = document.getElementById("preview-sheet").innerText;
+
+  // Gunakan Clipboard API modern jika tersedia (lebih andal di browser terbaru)
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast("📋 Seluruh teks berhasil disalin ke clipboard!");
+    }).catch(() => {
+      copyDocumentTextFallback(text);
+    });
+  } else {
+    copyDocumentTextFallback(text);
+  }
+}
+
+function copyDocumentTextFallback(text) {
+  try {
+    const el = document.createElement('textarea');
+    el.value = text;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    showToast("📋 Seluruh teks berhasil disalin ke clipboard!");
+  } catch (e) {
+    showToast("⚠️ Gagal menyalin otomatis. Silakan salin teks secara manual.");
+  }
+}
+
+/* ==========================================
+   7. EXPORT & IMPORT JSON DRAF (FULL OFFLINE)
+   ========================================== */
+function exportJsonDraft() {
+  const ppps = getSelectedPPPs();
+  const formData = {
+    guru: document.getElementById("in-guru").value,
+    sekolah: document.getElementById("in-sekolah").value,
+    jenjang: document.getElementById("in-jenjang").value,
+    fase: document.getElementById("in-fase").value,
+    mapel: document.getElementById("in-mapel").value,
+    semester: document.getElementById("in-semester").value,
+    alokasi: document.getElementById("in-alokasi").value,
+    topik: document.getElementById("in-topik").value,
+    kompetensiAwal: document.getElementById("in-kompetensi-awal").value,
+    sarpras: document.getElementById("in-sarpras").value,
+    sarprasPreset: document.getElementById("in-sarpras-preset").value,
+    ppps: ppps,
+    cpText: document.getElementById("in-cp-text").value,
+    tpText: document.getElementById("in-tp-text").value,
+    pemahamanBermakna: document.getElementById("in-pemahaman-bermakna").value,
+    pemantik: document.getElementById("in-pemantik").value,
+    materi: document.getElementById("in-materi").value,
+    model: document.getElementById("in-model").value,
+    pendaluhuan: document.getElementById("in-pendaluhuan").value,
+    inti: document.getElementById("in-inti").value,
+    penutup: document.getElementById("in-penutup").value,
+    media: document.getElementById("in-media").value,
+    asesmenDiag: document.getElementById("in-asesmen-diag").value,
+    asesmenForm: document.getElementById("in-asesmen-form").value,
+    asesmenSum: document.getElementById("in-asesmen-sum").value,
+    rubrik: document.getElementById("in-rubrik").value,
+    lkpd: document.getElementById("in-lkpd").value,
+    refleksiGuru: document.getElementById("in-refleksi-guru").value,
+    refleksiSiswa: document.getElementById("in-refleksi-siswa").value,
+    glosarium: document.getElementById("in-glosarium").value,
+    bacaan: document.getElementById("in-bacaan").value,
+    timestamp: new Date().toISOString()
+  };
+
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(formData, null, 2));
+  const downloadAnchor = document.createElement('a');
+  downloadAnchor.setAttribute("href", dataStr);
+  downloadAnchor.setAttribute("download", `Modul_Ajar_Draft_${formData.topik.replace(/\s+/g, '_')}.json`);
+  document.body.appendChild(downloadAnchor);
+  downloadAnchor.click();
+  downloadAnchor.remove();
+  
+  showToast("💾 Berkas Cadangan JSON Berhasil Diekspor!");
+}
+
+function triggerJsonImport() {
+  document.getElementById("import-json-file").click();
+}
+
+function importJsonDraft(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      
+      // Muat data kembali ke elemen form
+      document.getElementById("in-guru").value = data.guru || "";
+      document.getElementById("in-sekolah").value = data.sekolah || "";
+      document.getElementById("in-jenjang").value = data.jenjang || "SD";
+      onJenjangChange();
+
+      document.getElementById("in-fase").value = data.fase || "";
+      onFaseChange();
+
+      document.getElementById("in-mapel").value = data.mapel || "";
+      onMapelChange();
+
+      document.getElementById("in-semester").value = data.semester || "Ganjil";
+      document.getElementById("in-alokasi").value = data.alokasi || "";
+      document.getElementById("in-topik").value = data.topik || "";
+      document.getElementById("in-kompetensi-awal").value = data.kompetensiAwal || "";
+      document.getElementById("in-sarpras").value = data.sarpras || "";
+      if (data.sarprasPreset) {
+        document.getElementById("in-sarpras-preset").value = data.sarprasPreset;
+      }
+
+      // Setel ulang checkbox PPP
+      if (data.ppps && Array.isArray(data.ppps)) {
+        document.querySelectorAll("#ppp-container input[type='checkbox']").forEach(cb => {
+          cb.checked = data.ppps.includes(cb.value);
+        });
+      }
+
+      document.getElementById("in-cp-text").value = data.cpText || "";
+      document.getElementById("in-tp-text").value = data.tpText || "";
+      document.getElementById("in-pemahaman-bermakna").value = data.pemahamanBermakna || "";
+      document.getElementById("in-pemantik").value = data.pemantik || "";
+      document.getElementById("in-materi").value = data.materi || "";
+      document.getElementById("in-model").value = data.model || "Problem Based Learning (PBL)";
+      document.getElementById("in-pendaluhuan").value = data.pendaluhuan || "";
+      document.getElementById("in-inti").value = data.inti || "";
+      document.getElementById("in-penutup").value = data.penutup || "";
+      document.getElementById("in-media").value = data.media || "";
+      document.getElementById("in-asesmen-diag").value = data.asesmenDiag || "";
+      document.getElementById("in-asesmen-form").value = data.asesmenForm || "";
+      document.getElementById("in-asesmen-sum").value = data.asesmenSum || "";
+      document.getElementById("in-rubrik").value = data.rubrik || "";
+      document.getElementById("in-lkpd").value = data.lkpd || "";
+      document.getElementById("in-refleksi-guru").value = data.refleksiGuru || "";
+      document.getElementById("in-refleksi-siswa").value = data.refleksiSiswa || "";
+      document.getElementById("in-glosarium").value = data.glosarium || "";
+      document.getElementById("in-bacaan").value = data.bacaan || "";
+
+      showToast("📂 Draf Modul dari File JSON Sukses Dimuat!");
+      onInputChange();
+      goToStep(0);
+    } catch (err) {
+      alert("Format file JSON tidak valid.");
+    }
+  };
+  reader.readAsText(file);
+}
+
+/* ==========================================
+   8. AUTOSAVE LOCAL STORAGE
+   ========================================== */
+const STORAGE_KEY = "modul_ajar_smart_offline_draft";
+
+function autoSave() {
+  const ppps = getSelectedPPPs();
+  const formData = {
+    guru: document.getElementById("in-guru").value,
+    sekolah: document.getElementById("in-sekolah").value,
+    jenjang: document.getElementById("in-jenjang").value,
+    fase: document.getElementById("in-fase").value,
+    mapel: document.getElementById("in-mapel").value,
+    semester: document.getElementById("in-semester").value,
+    alokasi: document.getElementById("in-alokasi").value,
+    topik: document.getElementById("in-topik").value,
+    kompetensiAwal: document.getElementById("in-kompetensi-awal").value,
+    sarpras: document.getElementById("in-sarpras").value,
+    sarprasPreset: document.getElementById("in-sarpras-preset").value,
+    ppps: ppps,
+    cpText: document.getElementById("in-cp-text").value,
+    tpText: document.getElementById("in-tp-text").value,
+    pemahamanBermakna: document.getElementById("in-pemahaman-bermakna").value,
+    pemantik: document.getElementById("in-pemantik").value,
+    materi: document.getElementById("in-materi").value,
+    model: document.getElementById("in-model").value,
+    pendaluhuan: document.getElementById("in-pendaluhuan").value,
+    inti: document.getElementById("in-inti").value,
+    penutup: document.getElementById("in-penutup").value,
+    media: document.getElementById("in-media").value,
+    asesmenDiag: document.getElementById("in-asesmen-diag").value,
+    asesmenForm: document.getElementById("in-asesmen-form").value,
+    asesmenSum: document.getElementById("in-asesmen-sum").value,
+    rubrik: document.getElementById("in-rubrik").value,
+    lkpd: document.getElementById("in-lkpd").value,
+    refleksiGuru: document.getElementById("in-refleksi-guru").value,
+    refleksiSiswa: document.getElementById("in-refleksi-siswa").value,
+    glosarium: document.getElementById("in-glosarium").value,
+    bacaan: document.getElementById("in-bacaan").value
+  };
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+}
+
+function loadDraftOnStart() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (!saved) {
+    // Daftarkan input tracker pada draf baru
+    registerInputTrackers();
+    return;
+  }
+
+  try {
+    const data = JSON.parse(saved);
+    document.getElementById("in-guru").value = data.guru || "";
+    document.getElementById("in-sekolah").value = data.sekolah || "";
+    document.getElementById("in-jenjang").value = data.jenjang || "SD";
+    onJenjangChange();
+
+    document.getElementById("in-fase").value = data.fase || "";
+    onFaseChange();
+
+    document.getElementById("in-mapel").value = data.mapel || "";
+    onMapelChange();
+
+    document.getElementById("in-semester").value = data.semester || "Ganjil";
+    document.getElementById("in-alokasi").value = data.alokasi || "";
+    document.getElementById("in-topik").value = data.topik || "";
+    document.getElementById("in-kompetensi-awal").value = data.kompetensiAwal || "";
+    document.getElementById("in-sarpras").value = data.sarpras || "";
+    if (data.sarprasPreset) {
+      document.getElementById("in-sarpras-preset").value = data.sarprasPreset;
+    }
+
+    if (data.ppps && Array.isArray(data.ppps)) {
+      document.querySelectorAll("#ppp-container input[type='checkbox']").forEach(cb => {
+        cb.checked = data.ppps.includes(cb.value);
+      });
+    }
+
+    document.getElementById("in-cp-text").value = data.cpText || "";
+    document.getElementById("in-tp-text").value = data.tpText || "";
+    document.getElementById("in-pemahaman-bermakna").value = data.pemahamanBermakna || "";
+    document.getElementById("in-pemantik").value = data.pemantik || "";
+    document.getElementById("in-materi").value = data.materi || "";
+    document.getElementById("in-model").value = data.model || "Problem Based Learning (PBL)";
+    document.getElementById("in-pendaluhuan").value = data.pendaluhuan || "";
+    document.getElementById("in-inti").value = data.inti || "";
+    document.getElementById("in-penutup").value = data.penutup || "";
+    document.getElementById("in-media").value = data.media || "";
+    document.getElementById("in-asesmen-diag").value = data.asesmenDiag || "";
+    document.getElementById("in-asesmen-form").value = data.asesmenForm || "";
+    document.getElementById("in-asesmen-sum").value = data.asesmenSum || "";
+    document.getElementById("in-rubrik").value = data.rubrik || "";
+    document.getElementById("in-lkpd").value = data.lkpd || "";
+    document.getElementById("in-refleksi-guru").value = data.refleksiGuru || "";
+    document.getElementById("in-refleksi-siswa").value = data.refleksiSiswa || "";
+    document.getElementById("in-glosarium").value = data.glosarium || "";
+    document.getElementById("in-bacaan").value = data.bacaan || "";
+
+    showToast("📂 Draf Kemajuan Otomatis Dimuat!");
+  } catch(e) {
+    console.error("Gagal memuat draf: ", e);
+  }
+
+  registerInputTrackers();
+}
+
+function saveDraft() {
+  autoSave();
+  showToast("💾 Progress Draf Berhasil Disimpan di Browser!");
+}
+
+function resetForm() {
+  if (confirm("Apakah Anda yakin ingin menghapus semua isian Modul Ajar ini?")) {
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  }
+}
+
+function showToast(msg) {
+  const toast = document.getElementById("toast");
+  const msgSpan = document.getElementById("toast-message");
+  msgSpan.textContent = msg;
+  toast.classList.add("show");
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2500);
+}
+</script>
+</body>
+</html>
